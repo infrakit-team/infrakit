@@ -1,0 +1,229 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/forms";
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+	--animate-accordion-down: accordion-down 0.2s ease-out;
+	--animate-accordion-up: accordion-up 0.2s ease-out;
+
+	@keyframes accordion-down {
+		from {
+			height: 0;
+		}
+		to {
+			height: var(--starwind-accordion-content-height);
+		}
+	}
+
+	@keyframes accordion-up {
+		from {
+			height: var(--starwind-accordion-content-height);
+		}
+		to {
+			height: 0;
+		}
+	}
+
+	/* Radix Amber Colors */
+	--color-amber-1: #c08000;
+	--color-amber-2: #f4d100;
+	--color-amber-3: #ffde00;
+	--color-amber-4: #ffd400;
+	--color-amber-5: #f8cf00;
+	--color-amber-6: #eab500;
+	--color-amber-7: #dc9b00;
+	--color-amber-8: #da8a00;
+	--color-amber-9: #ffb300;
+	--color-amber-10: #ffb300;
+	--color-amber-11: #ab6400;
+	--color-amber-12: #341500;
+
+	/* Radix Red Colors */
+	--color-red-1: #ff0000;
+	--color-red-2: #ff0000;
+	--color-red-3: #f3000d;
+	--color-red-4: #ff0008;
+	--color-red-5: #ff0006;
+	--color-red-6: #f80004;
+	--color-red-7: #df0003;
+	--color-red-8: #d20005;
+	--color-red-9: #db0007;
+	--color-red-10: #d10005;
+	--color-red-11: #c40006;
+	--color-red-12: #55000d;
+
+	/* Radix Green Colors */
+	--color-green-1: #00c040;
+	--color-green-2: #00a32f;
+	--color-green-3: #00a433;
+	--color-green-4: #00a838;
+	--color-green-5: #019c39;
+	--color-green-6: #00963c;
+	--color-green-7: #009140;
+	--color-green-8: #00924b;
+	--color-green-9: #008f4a;
+	--color-green-10: #008647;
+	--color-green-11: #00713f;
+	--color-green-12: #002616;
+
+	/* Radix Sky Colors */
+	--color-sky-1: #00d5ff;
+	--color-sky-2: #00a4db;
+	--color-sky-3: #00b3ee;
+	--color-sky-4: #00ace4;
+	--color-sky-5: #00a1d8;
+	--color-sky-6: #0092ca;
+	--color-sky-7: #0089c1;
+	--color-sky-8: #0085bf;
+	--color-sky-9: #00c7fe;
+	--color-sky-10: #00bcf3;
+	--color-sky-11: #00749e;
+	--color-sky-12: #002540;
+}
+
+@theme inline {
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-info: var(--info);
+	--color-info-foreground: var(--info-foreground);
+	--color-success: var(--success);
+	--color-success-foreground: var(--success-foreground);
+	--color-warning: var(--warning);
+	--color-warning-foreground: var(--warning-foreground);
+	--color-error: var(--error);
+	--color-error-foreground: var(--error-foreground);
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-outline: var(--outline);
+
+	--radius-xs: calc(var(--radius) - 0.375rem);
+	--radius-sm: calc(var(--radius) - 0.25rem);
+	--radius-md: calc(var(--radius) - 0.125rem);
+	--radius-lg: var(--radius);
+	--radius-xl: calc(var(--radius) + 0.25rem);
+	--radius-2xl: calc(var(--radius) + 0.5rem);
+	--radius-3xl: calc(var(--radius) + 1rem);
+}
+
+@layer base {
+	:root {
+		--background: var(--color-primary-1);
+		--foreground: var(--color-primary-12);
+		--card: var(--color-primary-1);
+		--card-foreground: var(--color-primary-12);
+		--popover: var(--color-primary-1);
+		--popover-foreground: var(--color-primary-12);
+		--primary: var(--color-sky-9);
+		--primary-foreground: var(--color-primary-1);
+		--secondary: var(--color-amber-9);
+		--secondary-foreground: var(--color-primary-12);
+		--muted: var(--color-primary-3);
+		--muted-foreground: var(--color-primary-11);
+		--accent: var(--color-primary-3);
+		--accent-foreground: var(--color-primary-12);
+		--info: var(--color-sky-9);
+		--info-foreground: var(--color-sky-12);
+		--success: var(--color-green-9);
+		--success-foreground: var(--color-green-12);
+		--warning: var(--color-amber-9);
+		--warning-foreground: var(--color-amber-12);
+		--error: var(--color-red-9);
+		--error-foreground: var(--color-primary-1);
+		--border: var(--color-primary-4);
+		--input: var(--color-primary-6);
+		--outline: var(--color-primary-8);
+		--radius: 0.625rem;
+	}
+
+	.dark {
+		/* Dark mode primary/neutral colors */
+		--color-primary-1: #111110;
+		--color-primary-2: #191919;
+		--color-primary-3: #222;
+		--color-primary-4: #2a2a25;
+		--color-primary-5: #31312f;
+		--color-primary-6: #3b3b35;
+		--color-primary-7: #494944;
+		--color-primary-8: #606058;
+		--color-primary-9: #6e6e68;
+		--color-primary-10: #616159;
+		--color-primary-11: #b5b5af;
+		--color-primary-12: #efefe5;
+
+		/* Dark mode Radix colors */
+		--color-amber-1: #e63c00;
+		--color-amber-2: #fd9b00;
+		--color-amber-3: #fa8200;
+		--color-amber-4: #fc8200;
+		--color-amber-5: #fd8b00;
+		--color-amber-6: #fd9b00;
+		--color-amber-7: #ffab25;
+		--color-amber-8: #ffae35;
+		--color-amber-9: #ffc53d;
+		--color-amber-10: #ffd60a;
+		--color-amber-11: #ffca16;
+		--color-amber-12: #ffe7b3;
+
+		--color-red-1: #f41212;
+		--color-red-2: #f22f3e;
+		--color-red-3: #ff173f;
+		--color-red-4: #fe0a3b;
+		--color-red-5: #ff2047;
+		--color-red-6: #ff3e56;
+		--color-red-7: #ff5361;
+		--color-red-8: #ff5d61;
+		--color-red-9: #fe4e54;
+		--color-red-10: #ff6465;
+		--color-red-11: #ff9592;
+		--color-red-12: #ffd1d9;
+
+		--color-green-1: #00de45;
+		--color-green-2: #29f99d;
+		--color-green-3: #22ff99;
+		--color-green-4: #11ff99;
+		--color-green-5: #2bffa2;
+		--color-green-6: #44ffaa;
+		--color-green-7: #50fdac;
+		--color-green-8: #54ffad;
+		--color-green-9: #44ffa4;
+		--color-green-10: #43fea4;
+		--color-green-11: #46fea5;
+		--color-green-12: #bbffd7;
+
+		--color-sky-1: #0044ff;
+		--color-sky-2: #1171fb;
+		--color-sky-3: #1184fc;
+		--color-sky-4: #128fff;
+		--color-sky-5: #1c9dfd;
+		--color-sky-6: #28a5ff;
+		--color-sky-7: #2badfe;
+		--color-sky-8: #1db2fe;
+		--color-sky-9: #7ce3ff;
+		--color-sky-10: #a8eeff;
+		--color-sky-11: #7cd3ff;
+		--color-sky-12: #c2f3ff;
+	}
+
+	* {
+		@apply border-border;
+	}
+	html {
+		@apply bg-background text-foreground scheme-light dark:scheme-dark;
+	}
+	button {
+		@apply cursor-pointer;
+	}
+}

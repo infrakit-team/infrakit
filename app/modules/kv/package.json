@@ -1,0 +1,6 @@
+{
+	"name": "@infrakit/modules/kv",
+	"exports": {
+		".": "./index.ts"
+	}
+}

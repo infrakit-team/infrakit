@@ -1,0 +1,64 @@
+---
+title: "Hono"
+---
+
+# Hono Dashboard Adapter
+
+The `@infrakit/adapter/hono` package provides a simple way to integrate the InfraKit dashboard into a Hono application, making it easy to add observability to your modern, edge-ready projects.
+
+## Installation
+
+First, install the adapter along with Hono and the InfraKit SDK.
+
+```bash
+bun add @infrakit/adapter/hono hono @infrakit/sdk @infrakit/modules/kv
+```
+
+## Usage
+
+The `HonoAdapter` creates a Hono app instance that you can mount as a route in your main application using `app.route()`.
+
+### Complete Example
+
+Here is a complete example of setting up a Hono server with the InfraKit dashboard.
+
+```ts
+// main.ts
+import { HonoAdapter } from "@infrakit/adapter/hono";
+import { KeyValueMemoryAdapter } from "@infrakit/modules/kv";
+import { InfraKit } from "@infrakit/sdk";
+import { Hono } from "hono";
+
+// 1. Initialize InfraKit with your desired modules
+const infrakit = new InfraKit({
+	keyValue: {
+		adapter: new KeyValueMemoryAdapter(),
+	},
+});
+
+// (Optional) Seed your adapter with some data
+infrakit.keyValue.set({ key: "example-key", value: "Hello from Hono!" });
+
+// 2. Initialize the HonoAdapter
+const honoAdapter = new HonoAdapter({
+	infrakit: infrakit.dashboard,
+	baseUrl: "/dashboard", // The URL prefix for the dashboard
+});
+
+// 3. Create your Hono app and mount the dashboard route
+const app = new Hono();
+app.route("/dashboard", honoAdapter.endpoint);
+
+// Your other application routes
+app.get("/", (c) => c.text("Your main application is running!"));
+
+export default app;
+```
+
+### How It Works
+
+-   `baseUrl: "/dashboard"` informs the adapter of its public path, ensuring all asset and API links are generated correctly.
+-   `app.route("/dashboard", honoAdapter.endpoint)` mounts the entire dashboard, including its UI and API endpoints, under the `/dashboard` path.
+-   The adapter handles all incoming requests under `/dashboard` and serves either the dashboard UI or the appropriate API response.
+
+Now, when you run your Hono application, the InfraKit dashboard will be accessible at `/dashboard`.

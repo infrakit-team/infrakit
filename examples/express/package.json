@@ -1,0 +1,10 @@
+{
+	"name": "@infrakit/examples/express",
+	"dependencies": {
+		"@infrakit/adapter/hono": "workspace:*",
+		"@infrakit/modules/kv": "workspace:*",
+		"@infrakit/sdk": "workspace:*",
+		"@types/express": "^5.0.3",
+		"express": "^5.1.0"
+	}
+}

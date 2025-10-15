@@ -1,0 +1,70 @@
+---
+title: "Express"
+---
+
+# Express Dashboard Adapter
+
+The `@infrakit/adapter/express` package allows you to seamlessly integrate the InfraKit dashboard into an existing Express application. It exposes a standard Express router that handles all the necessary API and UI serving for you.
+
+## Installation
+
+First, install the adapter along with Express and the InfraKit SDK.
+
+```bash
+bun add @infrakit/adapter/express express @infrakit/sdk @infrakit/modules/kv
+```
+
+## Usage
+
+The `ExpressAdapter` is straightforward to use. You initialize it with your `infrakit` instance and a `baseUrl`, and then mount its `endpoint` as middleware in your Express app.
+
+### Complete Example
+
+Here is a complete example demonstrating how to set up an Express server with the InfraKit dashboard.
+
+```ts
+// main.ts
+import { ExpressAdapter } from "@infrakit/adapter/express";
+import { KeyValueMemoryAdapter } from "@infrakit/modules/kv";
+import { InfraKit } from "@infrakit/sdk";
+import express from "express";
+
+// 1. Initialize InfraKit with your desired modules
+const infrakit = new InfraKit({
+	keyValue: {
+		adapter: new KeyValueMemoryAdapter(),
+	},
+});
+
+// (Optional) Seed your adapter with some data
+infrakit.keyValue.set({ key: "example-key", value: "Hello from Express!" });
+
+// 2. Initialize the ExpressAdapter
+const expressAdapter = new ExpressAdapter({
+	baseUrl: "/dashboard", // This is the URL where the dashboard will be available
+	infrakit,
+});
+
+// 3. Create your Express app and mount the dashboard endpoint
+const app = express();
+app.use("/dashboard", expressAdapter.endpoint);
+
+// Your other application routes
+app.get("/", (req, res) => {
+	res.send("Your main application is running!");
+});
+
+app.listen(3000, () => {
+	console.log(`Server running on http://localhost:3000`);
+	console.log(`InfraKit Dashboard available at http://localhost:3000/dashboard`);
+});
+```
+
+### How It Works
+
+-   `baseUrl: "/dashboard"` tells the adapter that all dashboard-related URLs will start with `/dashboard`.
+-   `app.use("/dashboard", ...)` mounts the dashboard at that path.
+-   The adapter automatically handles serving the dashboard's HTML, CSS, JavaScript, and all its internal API routes (like `/dashboard/api/kv/list`).
+
+With this setup, your application runs as usual, and the full InfraKit dashboard becomes available at `http://localhost:3000/dashboard`.
+

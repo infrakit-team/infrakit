@@ -1,0 +1,282 @@
+---
+import type { CollectionEntry } from "astro:content";
+import "../styles/global.css";
+interface Props {
+  title: string;
+  headings?: Array<{ depth: number; text: string; slug: string }>;
+  markdown?: string;
+}
+const { title, headings = [], markdown = '' } = Astro.props;
+// Get all docs from the content collection
+const { getCollection } = await import("astro:content");
+const allDocs = await getCollection("docs");
+// Organize docs into navigation structure with categories
+const sortWithPriority = (
+  items: CollectionEntry<"docs">[],
+  priorityKeywords: string[]
+): CollectionEntry<"docs">[] => {
+  return items.sort((a, b) => {
+    const aHasPriority = priorityKeywords.some(k => a.id.includes(k));
+    const bHasPriority = priorityKeywords.some(k => b.id.includes(k));
+    
+    if (aHasPriority && !bHasPriority) return -1;
+    if (!aHasPriority && bHasPriority) return 1;
+    return a.id.localeCompare(b.id);
+  });
+};;
+
+const navStructure = [
+  {
+    title: "Overview",
+    items: sortWithPriority(
+      allDocs.filter(doc => doc.id.startsWith("overview/")),
+      ["introduction"]
+    ),
+  },
+ {
+    title: "Modules",
+    items: allDocs.filter(doc => doc.id.startsWith("modules/")),
+  },
+  {
+    title: "Dashboard",
+    items: allDocs.filter(doc => doc.id.startsWith("dashboard/")),
+  },
+];
+// Get current page
+const currentPath = Astro.url.pathname;
+// Filter out h1 from headings for table of contents
+const tocHeadings = headings.filter(h => h.depth > 1 && h.depth <= 3);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title} - Documentation</title>
+    <script is:inline>
+    // Initialize theme before page renders to prevent flash
+    const theme = localStorage.getItem('theme') || 
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'github-dark' : 'github-light');
+    document.documentElement.setAttribute('data-theme', theme);
+    </script>
+  </head>
+  <body class="bg-primary-1 text-primary-12">
+    <!-- Mobile Header -->
+    <header class="lg:hidden sticky top-0 z-20 bg-primary-1 border-b border-primary-6">
+      <div class="flex items-center justify-between px-4 py-3">
+        <h1 class="text-base font-semibold text-primary-12">Documentation</h1>
+        <div class="flex items-center gap-2">
+          <button id="theme-toggle-mobile" class="p-2 text-primary-11 hover:text-primary-12 transition-colors" aria-label="Toggle theme">
+            <svg class="w-5 h-5 hidden dark-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <svg class="w-5 h-5 light-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          </button>
+          <button id="mobile-menu-btn" class="p-2 text-primary-11 hover:text-primary-12" aria-label="Toggle menu">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Mobile Overlay -->
+    <div id="mobile-overlay" class="lg:hidden fixed inset-0 bg-black/20 opacity-50 z-40 hidden"></div>
+
+    <div class="flex min-h-screen">
+      <!-- Left Sidebar Navigation -->
+      <aside id="mobile-nav" class="w-64 flex-shrink-0 bg-primary-1 lg:sticky lg:top-0 lg:h-screen overflow-y-auto fixed inset-y-0 left-0 z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+        <div class="p-6 hidden lg:block">
+          <div class="flex items-center justify-between">
+            <h2 class="text-base font-semibold text-primary-12">Documentation</h2>
+            <button id="theme-toggle-desktop" class="p-2 text-primary-11 hover:text-primary-12 transition-colors rounded-md hover:bg-primary-3" aria-label="Toggle theme">
+              <svg class="w-5 h-5 hidden dark-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              <svg class="w-5 h-5 light-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="p-6">
+          <nav class="space-y-6">
+            {navStructure.map((section) => (
+            <div>
+              <div class="text-xs font-semibold uppercase tracking-wider mb-2 text-primary-11">
+                {section.title}
+              </div>
+              <div class="space-y-0.5">
+                {section.items.map((doc) => {
+                const href = `/docs/${doc.id.replace(/\.mdx?$/, "")}`;
+                const isActive = currentPath.includes(doc.id.replace(/\.mdx?$/, ""));
+                return (
+
+                
+<a
+                  href={href}
+                  class:list={[
+                    "block py-1.5 px-2 rounded text-sm transition-colors duration-150",
+                    isActive
+                      ? "bg-primary-4 text-primary-12 font-medium"
+                      : "text-primary-11 hover:text-primary-12 hover:bg-primary-3"
+                  ]}
+                >
+                  {doc.data.title}
+                </a>
+                );
+                })}
+              </div>
+            </div>
+            ))}
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1 min-w-0 bg-primary-1">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-16">
+
+          <article id="page-content" class="prose prose-sm sm:prose lg:prose-lg max-w-none">
+            <slot />
+          </article>
+
+          <!-- Hidden markdown content for copying -->
+          <div id="markdown-content" class="hidden">{markdown}</div>
+        </div>
+      </main>
+
+      <!-- Right Sidebar - Table of Contents -->
+      {tocHeadings.length > 0 && (
+      <aside class="hidden xl:block w-56 flex-shrink-0 sticky top-12 right-8 overflow-y-auto h-fit">
+        <!-- Copy Page Button -->
+        <button 
+          id="copy-page-btn" 
+          class="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-primary-12 bg-primary-3 hover:bg-primary-4 active:bg-primary-5 rounded-md transition-all duration-150 border border-primary-6 hover:border-primary-7 ml-5"
+          aria-label="Copy page content"
+        >
+          <svg id="copy-icon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+          <svg id="check-icon" class="w-3.5 h-3.5 hidden text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+          </svg>
+          <span id="copy-text">Copy page</span>
+        </button>
+        <div class="p-6">
+          <h3 class="text-xs font-semibold uppercase tracking-wider mb-3 text-primary-11">
+            On this page
+          </h3>
+          <nav class="space-y-2">
+            {tocHeadings.map((heading) => (
+            <a
+              href={`#${heading.slug}`}
+              class="block text-sm text-primary-11 hover:text-primary-12 transition-colors leading-snug"
+              style={`padding-left: ${(heading.depth - 2) * 0.75}rem;`}
+            >
+              {heading.text}
+            </a>
+            ))}
+          </nav>
+        </div>
+      </aside>
+      )}
+    </div>
+
+    <script>
+    // Mobile menu functionality
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileNav = document.getElementById('mobile-nav');
+    const mobileOverlay = document.getElementById('mobile-overlay');
+
+    function toggleMenu() {
+      mobileNav?.classList.toggle('-translate-x-full');
+      mobileOverlay?.classList.toggle('hidden');
+    }
+
+    mobileMenuBtn?.addEventListener('click', toggleMenu);
+    mobileOverlay?.addEventListener('click', toggleMenu);
+
+    // Close menu when clicking on a link
+    mobileNav?.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth < 1024) {
+          toggleMenu();
+        }
+      });
+    });
+
+    // Dark mode toggle functionality
+    function updateThemeIcons() {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const isDark = currentTheme === 'github-dark';
+      
+      document.querySelectorAll('.dark-icon').forEach(icon => {
+        icon.classList.toggle('hidden', !isDark);
+      });
+      document.querySelectorAll('.light-icon').forEach(icon => {
+        icon.classList.toggle('hidden', isDark);
+      });
+    }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'github-dark' ? 'github-light' : 'github-dark';
+      
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeIcons();
+    }
+
+    // Initialize icons on page load
+    updateThemeIcons();
+
+    // Add event listeners to both toggle buttons
+    document.getElementById('theme-toggle-desktop')?.addEventListener('click', toggleTheme);
+    document.getElementById('theme-toggle-mobile')?.addEventListener('click', toggleTheme);
+
+    // Copy page functionality
+    const copyPageBtn = document.getElementById('copy-page-btn');
+    const markdownContent = document.getElementById('markdown-content');
+    const copyIcon = document.getElementById('copy-icon');
+    const checkIcon = document.getElementById('check-icon');
+    const copyText = document.getElementById('copy-text');
+
+    copyPageBtn?.addEventListener('click', async () => {
+      if (!markdownContent) return;
+
+      try {
+        // Get the markdown content
+        const markdown = markdownContent.textContent || '';
+
+        // Copy to clipboard
+        await navigator.clipboard.writeText(markdown);
+
+        // Show success state
+        copyIcon?.classList.add('hidden');
+        checkIcon?.classList.remove('hidden');
+        if (copyText) copyText.textContent = 'Copied!';
+
+        // Reset after 2 seconds
+        setTimeout(() => {
+          copyIcon?.classList.remove('hidden');
+          checkIcon?.classList.add('hidden');
+          if (copyText) copyText.textContent = 'Copy page';
+        }, 2000);
+      } catch (err) {
+        console.error('Failed to copy page content:', err);
+        // Show error state briefly
+        if (copyText) copyText.textContent = 'Failed to copy';
+        setTimeout(() => {
+          if (copyText) copyText.textContent = 'Copy page';
+        }, 2000);
+      }
+    });
+    </script>
+  </body>
+</html>

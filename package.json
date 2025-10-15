@@ -1,0 +1,9 @@
+{
+	"name": "@infrakit/mono",
+	"private": true,
+	"workspaces": [
+		"app/**",
+		"examples/**",
+		"website/**"
+	]
+}

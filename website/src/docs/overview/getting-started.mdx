@@ -1,0 +1,74 @@
+---
+title: "Getting Started"
+---
+
+# Getting started
+
+This guide walks you through installing InfraKit and integrating it into an Express application.
+
+## Installation
+
+Install InfraKit's core SDK along with the modules and adapters you need:
+
+```bash
+bun install @infrakit/sdk @infrakit/modules/kv @infrakit/adapter/express express
+```
+
+This installs:
+- **@infrakit/sdk** - Core InfraKit functionality
+- **@infrakit/modules/kv** - Key-value storage module
+- **@infrakit/adapter/express** - Express integration
+- **express** - Web framework
+
+## Create your first integration
+
+Here's how to add InfraKit to an Express application with in-memory key-value storage:
+
+```ts
+// main.ts
+import { ExpressAdapter } from "@infrakit/adapter/express";
+import { KeyValueMemoryAdapter } from "@infrakit/modules/kv";
+import { InfraKit } from "@infrakit/sdk";
+import express from "express";
+
+// Initialize InfraKit with the Key-Value module
+const infrakit = new InfraKit({
+	keyValue: {
+		adapter: new KeyValueMemoryAdapter(),
+	},
+});
+
+// Create the dashboard adapter
+const expressAdapter = new ExpressAdapter({
+	baseUrl: "/dashboard",
+	infrakit,
+});
+
+// Use the keyValue client in your application
+infrakit.keyValue.set({ key: "greeting", value: "Hello from InfraKit!" });
+
+// Mount the dashboard endpoint
+const app = express();
+app.use("/dashboard", expressAdapter.endpoint);
+
+app.get("/", (req, res) => {
+	res.send("Your application is running!");
+});
+
+app.listen(3000, () => {
+	console.log("Server running on http://localhost:3000");
+	console.log("InfraKit Dashboard available at http://localhost:3000/dashboard");
+});
+```
+
+## What happens here
+
+The code above does three things:
+
+1. **Initializes InfraKit** with an in-memory key-value store that you can use throughout your application
+2. **Creates an ExpressAdapter** that generates a dashboard endpoint for monitoring and managing InfraKit modules
+3. **Mounts the dashboard** at `/dashboard` so you can access it at `http://localhost:3000/dashboard`
+
+## Next steps
+
+Now that InfraKit is running, you can explore the dashboard and start using the key-value module in your routes and middleware.

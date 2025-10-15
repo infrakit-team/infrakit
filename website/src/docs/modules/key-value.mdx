@@ -1,0 +1,118 @@
+---
+title: "Key-Value"
+---
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/starwind/tabs";
+
+# Key-Value Module
+
+The Key-Value module provides a simple yet powerful storage solution that comes with a full-featured dashboard for easy management. It ships with a default `KeyValueMemoryAdapter` for quick, in-memory storage, perfect for caching, session management, and more.
+
+## Features
+
+-   **Simple Client SDK:** Use intuitive `get`, `set`, and `del` methods to interact with your store directly from your application code.
+-   **Full-Featured Dashboard:** A comprehensive UI to view statistics, manage entries, and monitor operations in real-time.
+-   **Time-To-Live (TTL):** Set an automatic expiration time for any key.
+-   **Rich Analytics:** Track total keys, memory usage, cache hit rate, and operations history over various time ranges.
+-   **Data Management:** Search, sort, paginate, add, view, and delete entries directly from the dashboard.
+
+## Setup
+
+To use the Key-Value module, initialize `InfraKit` with a storage adapter. The `KeyValueMemoryAdapter` is included out of the box.
+
+```typescript
+import { KeyValueMemoryAdapter } from "@infrakit/modules/kv";
+import { InfraKit } from "@infrakit/sdk";
+
+const infrakit = new InfraKit({
+	keyValue: {
+		adapter: new KeyValueMemoryAdapter(),
+	},
+});
+
+// The client is now available on infrakit.keyValue
+const kv = infrakit.keyValue;
+```
+
+## Client SDK Usage
+
+Once initialized, you can access the client from your `infrakit` instance to perform CRUD operations.
+
+### API Reference
+
+```typescript
+type KeyValueOption = {
+  timeToLiveInMs?: number;
+};
+
+type KeyValueClient = {
+  get(input: { key: string }): string | undefined;
+  set(input: { key: string; value: string; option?: KeyValueOption }): boolean;
+  del(input: { key: string }): boolean;
+};
+```
+
+### Examples
+
+**Setting a simple key-value pair:**
+
+```typescript
+kv.set({
+  key: "user:1",
+  value: JSON.stringify({ name: "Alice", email: "alice@example.com" })
+});
+```
+
+**Setting a key with expiration (5 minutes):**
+
+```typescript
+kv.set({
+  key: "cache:page:home",
+  value: "<html>...</html>",
+  option: {
+    timeToLiveInMs: 300000, // 5 minutes
+  },
+});
+```
+
+**Getting a value:**
+
+```typescript
+const userJson = kv.get({ key: "user:1" });
+if (userJson) {
+  const user = JSON.parse(userJson);
+  console.log(user.name); // "Alice"
+}
+```
+
+**Deleting a key:**
+
+```typescript
+const wasDeleted = kv.del({ key: "user:1" });
+console.log(wasDeleted); // true
+```
+
+## Adapters
+
+InfraKit uses two types of adapters: **Storage Adapters** for data handling and **Framework Adapters** for UI integration.
+
+### Storage Adapters
+
+Storage adapters implement the `KeyValue` interface and provide the underlying logic for storing and retrieving data.
+
+#### `KeyValueMemoryAdapter`
+
+This is the default in-memory adapter. It's fast and easy to set up, making it ideal for development, testing, and caching scenarios where data persistence across restarts is not required.
+
+```typescript
+import { KeyValueMemoryAdapter } from "@infrakit/modules/kv";
+
+const infrakit = new InfraKit({
+	keyValue: {
+		adapter: new KeyValueMemoryAdapter(),
+	},
+});
+```
+
+#### Creating Custom Adapters
+
+You can create your own adapter to connect InfraKit to other storage systems like **Redis**, a **database**, or the **file system**. Simply implement the `KeyValue` interface from `@infrakit/modules/kv`.
