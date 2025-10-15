@@ -31,9 +31,7 @@ import { Hono } from "hono";
 
 // 1. Initialize InfraKit with your desired modules
 const infrakit = new InfraKit({
-	keyValue: {
-		adapter: new KeyValueMemoryAdapter(),
-	},
+	keyValue:  new KeyValueMemoryAdapter(),
 });
 
 // (Optional) Seed your adapter with some data
@@ -41,8 +39,8 @@ infrakit.keyValue.set({ key: "example-key", value: "Hello from Hono!" });
 
 // 2. Initialize the HonoAdapter
 const honoAdapter = new HonoAdapter({
-	infrakit: infrakit.dashboard,
 	baseUrl: "/dashboard", // The URL prefix for the dashboard
+	infrakit,
 });
 
 // 3. Create your Hono app and mount the dashboard route

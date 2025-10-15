@@ -8,18 +8,14 @@ import { KeyValueMemoryAdapter } from "@infrakit/modules/kv";
 
 // During development, use the in-memory adapter.
 const infrakit = new InfraKit({
-  keyValue: {
-    adapter: new KeyValueMemoryAdapter()
-  }
+  keyValue:  new KeyValueMemoryAdapter()
 });
 
 // In production, you'll swap the adapter.
 // const infrakit = new InfraKit({
-//   keyValue: {
-//     adapter: new KeyValuePostgresAdapter({
-//       connectionString: process.env.DATABASE_URL
-//     })
-//   }
+//   keyValue:  new KeyValuePostgresAdapter({
+//    connectionString: process.env.DATABASE_URL
+//   })
 // });`;
 
 // Updated dashboardCode based on /adapter/express/index.ts and /express/main.ts
@@ -32,9 +28,7 @@ const app = express();
 
 // Instantiate InfraKit with your modules
 const infrakit = new InfraKit({
-  keyValue: {
-    adapter: new KeyValueMemoryAdapter()
-  }
+  keyValue: new KeyValueMemoryAdapter()
 });
 
 // Add the dashboard to your app with an adapter

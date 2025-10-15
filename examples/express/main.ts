@@ -5,9 +5,7 @@ import express from "express";
 import { getData } from "./seed";
 
 const infrakit = new InfraKit({
-	keyValue: {
-		adapter: new KeyValueMemoryAdapter(),
-	},
+	keyValue: new KeyValueMemoryAdapter(),
 });
 
 const expressAdapter = new ExpressDashboardAdapter({

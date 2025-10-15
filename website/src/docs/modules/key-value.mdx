@@ -24,9 +24,7 @@ import { KeyValueMemoryAdapter } from "@infrakit/modules/kv";
 import { InfraKit } from "@infrakit/sdk";
 
 const infrakit = new InfraKit({
-	keyValue: {
-		adapter: new KeyValueMemoryAdapter(),
-	},
+	keyValue:  new KeyValueMemoryAdapter(),
 });
 
 // The client is now available on infrakit.keyValue
@@ -107,9 +105,7 @@ This is the default in-memory adapter. It's fast and easy to set up, making it i
 import { KeyValueMemoryAdapter } from "@infrakit/modules/kv";
 
 const infrakit = new InfraKit({
-	keyValue: {
-		adapter: new KeyValueMemoryAdapter(),
-	},
+	keyValue: new KeyValueMemoryAdapter(),
 });
 ```
 

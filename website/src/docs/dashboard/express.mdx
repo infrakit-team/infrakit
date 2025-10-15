@@ -31,9 +31,7 @@ import express from "express";
 
 // 1. Initialize InfraKit with your desired modules
 const infrakit = new InfraKit({
-	keyValue: {
-		adapter: new KeyValueMemoryAdapter(),
-	},
+	keyValue:  new KeyValueMemoryAdapter(),
 });
 
 // (Optional) Seed your adapter with some data

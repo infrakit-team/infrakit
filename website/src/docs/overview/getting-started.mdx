@@ -33,9 +33,7 @@ import express from "express";
 
 // Initialize InfraKit with the Key-Value module
 const infrakit = new InfraKit({
-	keyValue: {
-		adapter: new KeyValueMemoryAdapter(),
-	},
+	keyValue:  new KeyValueMemoryAdapter(),
 });
 
 // Create the dashboard adapter

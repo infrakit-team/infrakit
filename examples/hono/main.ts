@@ -5,14 +5,12 @@ import { Hono } from "hono";
 import { getData } from "./seed";
 
 const infrakit = new InfraKit({
-	keyValue: {
-		adapter: new KeyValueMemoryAdapter(),
-	},
+	keyValue: new KeyValueMemoryAdapter(),
 });
 
 const honoAdapter = new HonoDashboardAdapter({
-	infrakit,
 	baseUrl: "/dashboard",
+	infrakit,
 });
 
 for (const item of getData()) {

@@ -1,12 +1,10 @@
 import type { KeyValue, KeyValueClient } from "@infrakit/modules/kv";
 
 type InfraKitConfig = {
-	keyValue?: {
-		adapter: KeyValue;
-	};
+	keyValue?: KeyValue;
 };
 
-type ExtractKeyValueAdapter<T> = T extends { adapter: KeyValue }
+type ExtractKeyValueAdapter<T> = T extends KeyValue
 	? KeyValueClient
 	: undefined;
 
@@ -18,12 +16,12 @@ export class InfraKit<T extends InfraKitConfig = InfraKitConfig> {
 	}
 
 	get keyValue(): ExtractKeyValueAdapter<T["keyValue"]> {
-		return this.#keyValue?.adapter as ExtractKeyValueAdapter<T["keyValue"]>;
+		return this.#keyValue as ExtractKeyValueAdapter<T["keyValue"]>;
 	}
 
 	get dashboard() {
 		return {
-			keyValue: this.#keyValue?.adapter.dashboard,
+			keyValue: this.#keyValue?.dashboard,
 		};
 	}
 }
