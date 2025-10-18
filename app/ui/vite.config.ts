@@ -6,10 +6,27 @@ export default defineConfig({
 	plugins: [solidPlugin(), tailwindcss()],
 	server: {
 		proxy: {
-			"/dashboard/api": {
+			"/admin/api": {
 				// Match the actual path
 				target: "http://localhost:3000",
 				changeOrigin: true,
+			},
+		},
+	},
+	build: {
+		assetsDir: ".",
+		cssCodeSplit: false,
+		rollupOptions: {
+			output: {
+				entryFileNames: "index.js",
+				chunkFileNames: "[name].js",
+				assetFileNames: (assetInfo) => {
+					if (assetInfo.name?.endsWith(".css")) {
+						return "index.css";
+					}
+					return "[name][extname]";
+				},
+				inlineDynamicImports: true,
 			},
 		},
 	},

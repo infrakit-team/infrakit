@@ -9,7 +9,7 @@ const infrakit = new InfraKit({
 });
 
 const honoAdapter = new HonoDashboardAdapter({
-	baseUrl: "/dashboard",
+	baseUrl: "/admin",
 	infrakit,
 });
 
@@ -18,5 +18,5 @@ for (const item of getData()) {
 }
 
 const app = new Hono();
-app.route("/dashboard", honoAdapter.endpoint);
+app.route("/admin", honoAdapter.endpoint);
 export default app;

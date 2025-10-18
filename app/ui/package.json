@@ -1,8 +1,16 @@
 {
 	"name": "@infrakit/ui",
+	"version": "0.1.0",
+	"private": false,
+	"license": "MIT",
+	"files": ["dist"],
+	"publishConfig": {
+		"access": "public"
+	},
 	"scripts": {
 		"dev": "vite dev",
-		"build": "vite build"
+		"build": "vite build",
+		"prepublishOnly": "bun run build"
 	},
 	"dependencies": {
 		"@kobalte/core": "^0.13.11",
