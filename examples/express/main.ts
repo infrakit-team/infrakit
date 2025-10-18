@@ -1,6 +1,6 @@
-import { ExpressDashboardAdapter } from "@infrakit-team/ui/express";
-import { KeyValueMemoryAdapter } from "@infrakit-team/modules/kv/memory";
-import { InfraKit } from "@infrakit/sdk";
+import { KeyValueMemoryAdapter } from "@infrakit-team/module-kv-memory";
+import { InfraKit } from "@infrakit-team/sdk";
+import { ExpressDashboardAdapter } from "@infrakit-team/ui-express";
 import express from "express";
 import { getData } from "./seed";
 

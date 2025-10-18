@@ -27,7 +27,12 @@ jobs:
             exit 1
           fi
           export VERSION
-          for pkg in app/ui/core app/ui/adapter/hono; do
+          PACKAGES=(
+            app/ui/core
+            app/ui/adapter-hono
+            app/ui/adapter-express
+          )
+          for pkg in "${PACKAGES[@]}"; do
             if [ ! -f "$pkg/package.json" ]; then
               echo "Skipping missing package: $pkg"
               continue
@@ -45,9 +50,15 @@ jobs:
           NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           set -euo pipefail
-          for pkg in app/ui/core app/ui/adapter/hono; do
-            if [ -f "$pkg/package.json" ]; then
-              echo "Publishing $pkg"
-              (cd "$pkg" && bun publish --access public)
+          PACKAGES=(
+            app/ui/core
+            app/ui/adapter-hono
+            app/ui/adapter-express
+          )
+          for pkg in "${PACKAGES[@]}"; do
+            if [ ! -f "$pkg/package.json" ]; then
+              continue
             fi
+            echo "Publishing $pkg"
+            (cd "$pkg" && bun publish --access public)
           done

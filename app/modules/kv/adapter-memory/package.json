@@ -1,10 +1,10 @@
 {
-	"name": "@infrakit-team/modules/kv/adapter-memory",
+	"name": "@infrakit-team/module-kv-memory",
 	"exports": {
-		".": "./index.ts",
+		".": "./index.ts"
 	},
-  "dependencies": {
-    "@infrakit-team/modules/kv": "workspace:*",
-    "@infrakit-team/modules/kv/test": "workspace:*"
-  }
+	"dependencies": {
+		"@infrakit-team/modules/kv": "workspace:*",
+		"@infrakit-team/modules/kv/test": "workspace:*"
+	}
 }
