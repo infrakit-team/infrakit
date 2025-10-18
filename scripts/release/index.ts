@@ -5,6 +5,11 @@ import { uiCommand } from "./ui";
 
 $.throws(true);
 
+const showStack = (() => {
+	const flag = (process.env.RELEASE_DEBUG ?? process.env.DEBUG_RELEASE ?? "").toLowerCase();
+	return flag === "1" || flag === "true" || flag === "yes";
+})();
+
 const releaseCommand = command({
 	name: "release",
 	desc: "Release automation utilities",
@@ -14,6 +19,19 @@ const releaseCommand = command({
 	},
 });
 
+const isStepError = (error: Error) => error.name === "StepError";
+
+const logError = (error: unknown) => {
+	if (error instanceof Error) {
+		console.error(error.message);
+		if (!isStepError(error) && showStack && error.stack) {
+			console.error(error.stack);
+		}
+	} else {
+		console.error(String(error));
+	}
+};
+
 async function main() {
 	try {
 		await run([releaseCommand], {
@@ -21,11 +39,7 @@ async function main() {
 			description: "Infrakit release helpers",
 		});
 	} catch (error) {
-		if (error instanceof Error) {
-			console.error(error.message);
-		} else {
-			console.error(error);
-		}
+		logError(error);
 		process.exit(1);
 	}
 }

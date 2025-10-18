@@ -52,14 +52,15 @@ Now, you can visit:
 
 ## UI Releases
 
-Use `bun run scripts/release/index.ts ui` to publish a new `ui-v*` release to GitHub.
+Use `bun run scripts/release/index.ts release ui` to publish a new `ui-v*` release to GitHub.
 
 1. Ensure your working tree is clean, `main` (or the branch you want to release from) is up to date, and `gh auth status` succeeds.
 2. Run the script with the new version number. The script accepts `0.1.3`, `v0.1.3`, or the full tag name:
     ```sh
-    bun run scripts/release/index.ts ui 0.1.3
+    bun run scripts/release/index.ts release ui 0.1.3
     ```
 3. The script generates notes with `git-cliff` and pushes the release via `gh release create`. Pass `--dry-run` (or `-d`) to preview commands without publishing.
+4. Set `RELEASE_DEBUG=true` if you want stack traces for debugging.
 
 ## Contributing
 

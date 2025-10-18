@@ -21,6 +21,131 @@ const uiOptions = {
 
 type UiOptions = TypeOf<typeof uiOptions>;
 
+const decoder = new TextDecoder();
+const shouldShowStack = (() => {
+	const flag = (
+		process.env.RELEASE_DEBUG ??
+		process.env.DEBUG_RELEASE ??
+		""
+	).toLowerCase();
+	return flag === "1" || flag === "true" || flag === "yes";
+})();
+
+class StepError extends Error {
+	constructor(
+		public readonly step: string,
+		public readonly cause: unknown,
+	) {
+		super(formatStepError(step, cause));
+		this.name = "StepError";
+		this.step = step;
+		this.cause = cause;
+	}
+}
+
+const runStep = async <T>(
+	label: string,
+	fn: () => Promise<T> | T,
+): Promise<T> => {
+	console.log(`→ ${label}`);
+	try {
+		return await fn();
+	} catch (cause) {
+		throw new StepError(label, cause);
+	}
+};
+
+type ShellErrorLike = Error & {
+	exitCode?: number;
+	stdout?: unknown;
+	stderr?: unknown;
+	cmd?: string[];
+};
+
+const formatStepError = (step: string, cause: unknown): string => {
+	const prefix = `Failed during ${step}.`;
+	if (cause instanceof Error) {
+		const segments: string[] = [];
+		const shellDetails = formatShellError(cause);
+
+		if (shellDetails) {
+			segments.push(shellDetails);
+		} else {
+			const message = cause.message?.trim();
+			if (message) {
+				segments.push(message);
+			}
+		}
+
+		if (shouldShowStack && cause.stack) {
+			segments.push(`Stack trace:\n${cause.stack}`);
+		}
+
+		return segments.length ? `${prefix}\n${segments.join("\n")}` : prefix;
+	}
+
+	if (cause === undefined || cause === null) {
+		return prefix;
+	}
+
+	return `${prefix}\n${String(cause)}`;
+};
+
+const formatShellError = (error: ShellErrorLike): string | null => {
+	if (typeof error.exitCode !== "number") {
+		return null;
+	}
+
+	const lines: string[] = [];
+	const message = error.message?.trim();
+	if (message) {
+		lines.push(message);
+	}
+
+	const cmd = Array.isArray(error.cmd) ? error.cmd.join(" ") : undefined;
+	if (cmd) {
+		lines.push(`Command: ${cmd}`);
+	}
+
+	lines.push(`Exit code: ${error.exitCode}`);
+
+	const stdout = formatShellOutput(error.stdout);
+	if (stdout) {
+		lines.push(`stdout:\n${stdout}`);
+	}
+
+	const stderr = formatShellOutput(error.stderr);
+	if (stderr) {
+		lines.push(`stderr:\n${stderr}`);
+	}
+
+	return lines.join("\n");
+};
+
+const formatShellOutput = (output: unknown): string => {
+	if (!output) {
+		return "";
+	}
+
+	if (typeof output === "string") {
+		return output.trim();
+	}
+
+	if (output instanceof Uint8Array) {
+		return decoder.decode(output).trim();
+	}
+
+	if (Array.isArray(output)) {
+		return output.map(formatShellOutput).filter(Boolean).join("\n");
+	}
+
+	if (typeof output === "object" && output !== null && "toString" in output) {
+		return String(output).trim();
+	}
+
+	return String(output);
+};
+
 const normalizeTag = (input: string) => {
 	if (input.startsWith("ui-v")) return input;
 	if (input.startsWith("v")) return `ui-${input}`;
@@ -68,7 +193,8 @@ const ensureTagDoesNotExist = async (tag: string) => {
 };
 
 const findPreviousTag = async (currentTag: string) => {
-	const tagList = await $`git tag --list ui-v* --sort=-version:refname`.text();
+	const tagList =
+		(await $`git tag --list "ui-v*" --sort=-version:refname`.text()) as string;
 	return tagList
 		.split(/\r?\n/)
 		.map((line) => line.trim())
@@ -96,6 +222,33 @@ const ensureCleanWorkingTree = async () => {
 	if (status.length > 0) {
 		throw new Error(
 			"Working tree has uncommitted changes. Commit or stash before releasing.",
+		);
+	}
+};
+
+const ensureHeadPushed = async () => {
+	const upstream = await $`git rev-parse --abbrev-ref --symbolic-full-name @{u}`
+		.quiet()
+		.nothrow();
+
+	if (upstream.exitCode !== 0) {
+		throw new Error(
+			"No upstream branch configured for HEAD. Push the current branch before releasing.",
+		);
+	}
+
+	const aheadBehind = (
+		await $`git rev-list --left-right --count @{u}...HEAD`.text()
+	).trim();
+	const [behindCount, aheadCount] = aheadBehind.split(/\s+/).map(Number);
+
+	if (Number.isNaN(behindCount) || Number.isNaN(aheadCount)) {
+		throw new Error("Could not determine upstream sync status.");
+	}
+
+	if (aheadCount > 0) {
+		throw new Error(
+			"Local branch has commits not yet pushed to upstream. Push before releasing.",
 		);
 	}
 };
@@ -128,18 +281,39 @@ export const uiCommand = command({
 	desc: "Create a GitHub release for the UI package",
 	options: uiOptions,
 	handler: async (options: UiOptions) => {
-		ensureCommands();
-		await ensureRepoRoot();
+		await runStep("verifying required commands", () => ensureCommands());
+		const repoRoot = await runStep("locating repository root", ensureRepoRoot);
+		console.log(`Repository root: ${repoRoot}`);
 
-		const tag = normalizeTag(options.version);
-		validateVersion(tag);
-		await ensureTagDoesNotExist(tag);
+		const tag = await runStep("validating version input", () => {
+			const normalized = normalizeTag(options.version);
+			validateVersion(normalized);
+			return normalized;
+		});
+		console.log(`Normalized tag: ${tag}`);
 
-		await ensureCleanWorkingTree();
+		await runStep("checking for existing tag or release", () =>
+			ensureTagDoesNotExist(tag),
+		);
+		await runStep("checking for uncommitted changes", ensureCleanWorkingTree);
+		await runStep("verifying upstream branch is synchronized", ensureHeadPushed);
 
-		const previousTag = await findPreviousTag(tag);
-		const notes = await generateNotes(previousTag, tag);
+		const previousTag = await runStep("locating previous UI tag", () =>
+			findPreviousTag(tag),
+		);
+		if (previousTag) {
+			console.log(`Previous tag detected: ${previousTag}`);
+		} else {
+			console.log("No previous UI tag detected; using full history.");
+		}
 
-		await createRelease(tag, notes, options.dryRun ?? false);
+		const notes = await runStep("generating release notes with git-cliff", () =>
+			generateNotes(previousTag, tag),
+		);
+
+		await runStep(
+			options.dryRun ? "preparing release preview" : "creating GitHub release",
+			() => createRelease(tag, notes, options.dryRun ?? false),
+		);
 	},
 });
