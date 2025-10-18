@@ -28,7 +28,6 @@ jobs:
           fi
           export VERSION
           PACKAGES=(
-            app/modules/kv/core
             app/modules/kv/adapter-memory
           )
           for pkg in "${PACKAGES[@]}"; do
@@ -42,7 +41,7 @@ jobs:
 
       - name: Publish packages to npm
         env:
-          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           set -euo pipefail
           PACKAGES=(
@@ -53,5 +52,5 @@ jobs:
               continue
             fi
             echo "Publishing $pkg"
-            (cd "$pkg" && bun publish --access public)
+            (cd "$pkg" && npm publish --access public)
           done
