@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: app/ui
+        working-directory: app/ui/core
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
