@@ -1,6 +1,6 @@
-import { InfraKit } from "@infrakit/sdk";
-import { KeyValueMemoryAdapter } from "@infrakit-team/modules/kv/adapter-memory";
-import { HonoDashboardAdapter } from "@infrakit-team/ui/hono";
+import { KeyValueMemoryAdapter } from "@infrakit-team/module-kv-memory";
+import { InfraKit } from "@infrakit-team/sdk";
+import { HonoDashboardAdapter } from "@infrakit-team/ui-hono";
 import { Hono } from "hono";
 import { getData } from "./seed";
 

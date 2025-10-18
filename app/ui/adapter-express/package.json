@@ -1,5 +1,5 @@
 {
-	"name": "@infrakit-team/ui/exrpess",
+	"name": "@infrakit-team/ui-exrpess",
 	"dependencies": {
 		"@infrakit-team/sdk": "workspace:*",
 		"@types/express": "^5.0.3",

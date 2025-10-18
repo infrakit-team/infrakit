@@ -16,8 +16,9 @@
     "lib": ["es2022"],
     "baseUrl": ".",
     "paths": {
-      "@infrakit-team/modules/*": ["./app/modules/*"],
-      "@infrakit-team/ui/*": ["./app/ui/adapter/*"],
+      "@infrakit-team/module-kv-memory": ["./app/modules/kv/adapter-memory"],
+      "@infrakit-team/ui-hono": ["./app/ui/adapter-hono"],
+      "@infrakit-team/ui-express": ["./app/ui/adapter-express"],
       "@infrakit-team/sdk": ["./app/sdk"]
     }
   }
