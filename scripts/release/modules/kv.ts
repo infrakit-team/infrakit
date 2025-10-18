@@ -6,5 +6,4 @@ export const kvCommand = createReleaseCommand({
 	tagPrefix: "kv",
 	displayName: "KV",
 	packageJsonPaths: ["app/modules/kv/adapter-memory/package.json"],
-	publishDirs: ["app/modules/kv/adapter-memory"],
 });
