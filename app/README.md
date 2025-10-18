@@ -4,10 +4,7 @@ This directory contains all the core source code for the Infrakit project, organ
 
 ## Structure
 
--   `./sdk`: The main developer-facing SDK (`@infrakit/sdk`) used to initialize and interact with Infrakit.
+-   `./sdk`: The main developer-facing SDK (`@infrakit-team/sdk`) used to initialize and interact with Infrakit.
 -   `./modules`: Contains the different infrastructure modules. Each module provides a specific piece of backend functionality.
-    -   `kv`: A Key-Value store module.
--   `./adapter`: Contains framework-specific adapters that allow you to mount the Infrakit dashboard into an existing web application.
-    -   `express`: An adapter for Express.js.
-    -   `hono`: An adapter for Hono.
--   `./ui`: The frontend application for the dashboard, built with SolidJS and Vite. This package is consumed by the framework adapters.
+    -   `kv`: The KV module (`@infrakit-team/modules/kv`) with supporting packages such as `@infrakit-team/module-kv-memory` and `@infrakit-team/modules/kv/test`.
+-   `./ui`: The frontend dashboard (`@infrakit-team/ui`) and its framework adapters (`@infrakit-team/ui-hono`, `@infrakit-team/ui-express`), built with SolidJS and Vite.

@@ -19,10 +19,9 @@ It provides a central SDK to integrate different modules, starting with a powerf
 This project is a monorepo managed by `bun workspaces`. It's organized into the following main directories:
 
 -   `📂 app/`: Contains all the core packages that make up Infrakit.
-    -   `sdk`: The main developer-facing SDK (`@infrakit/sdk`).
-    -   `modules`: The infrastructure modules, like `@infrakit/modules/kv`.
-    -   `adapter`: Framework-specific adapters for the dashboard, like `@infrakit/adapter/express`.
-    -   `ui`: The SolidJS frontend application for the dashboard.
+-   `sdk`: The main developer-facing SDK (`@infrakit-team/sdk`).
+-   `modules`: Infrastructure modules, like `@infrakit-team/modules/kv` with adapters such as `@infrakit-team/module-kv-memory`.
+-   `ui`: The SolidJS dashboard application and its framework adapters (`@infrakit-team/ui-hono`, `@infrakit-team/ui-express`).
 -   `📂 examples/`: Example applications demonstrating how to use Infrakit with different frameworks.
 -   `📂 website/`: The official documentation and marketing website, built with Astro.
 
@@ -50,17 +49,34 @@ Now, you can visit:
 -   `http://localhost:3000` to see the example application running.
 -   `http://localhost:3000/dashboard` to see the Infrakit dashboard.
 
-## UI Releases
+## Releases
 
-Use `bun run scripts/release/index.ts release ui` to publish a new `ui-v*` release to GitHub.
+Use `bun run scripts/release/index.ts release <target>` to publish GitHub releases. The helper enforces `<target>-v<semver>` tag formats, checks for a clean, pushed branch, and generates notes with `git-cliff`. Set `RELEASE_DEBUG=true` to surface full stack traces when debugging failures.
+
+### UI (`ui-v*`)
 
 1. Ensure your working tree is clean, `main` (or the branch you want to release from) is up to date, and `gh auth status` succeeds.
 2. Run the script with the new version number. The script accepts `0.1.3`, `v0.1.3`, or the full tag name:
     ```sh
     bun run scripts/release/index.ts release ui 0.1.3
     ```
-3. The script generates notes with `git-cliff` and pushes the release via `gh release create`. Pass `--dry-run` (or `-d`) to preview commands without publishing.
-4. Set `RELEASE_DEBUG=true` if you want stack traces for debugging.
+3. Pass `--dry-run` (or `-d`) to preview commands without creating the release.
+
+### SDK (`sdk-v*`)
+
+Publish the SDK package with:
+
+```sh
+bun run scripts/release/index.ts release sdk 0.1.3
+```
+
+### KV Module (`kv-v*`)
+
+Publish the KV core and memory adapter packages with:
+
+```sh
+bun run scripts/release/index.ts release modules kv 0.1.3
+```
 
 ## Contributing
 

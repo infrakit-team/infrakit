@@ -10,7 +10,7 @@ The UI is a single-page application built with:
 -   **Build Tool**: Vite
 -   **Styling**: Tailwind CSS & Kobalte UI components
 
-This package is not intended for direct use by end-users. Instead, it is built into static assets (`dist/`) which are then served automatically by the **framework adapters** (e.g., `@infrakit/adapter/express`).
+This package is not intended for direct use by end-users. Instead, it is built into static assets (`dist/`) which are then served automatically by the **framework adapters** (e.g., `@infrakit-team/ui-express` or `@infrakit-team/ui-hono`).
 
 ## Development
 

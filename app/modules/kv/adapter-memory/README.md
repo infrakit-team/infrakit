@@ -1,74 +1,36 @@
-# Key-Value Module (`@infrakit/modules/kv`)
+# KV Memory Adapter (`@infrakit-team/module-kv-memory`)
 
-This package provides a powerful Key-Value storage module for Infrakit, complete with a client SDK, a default in-memory adapter, and a full-featured dashboard interface.
+This package provides the zero-dependency, in-memory adapter for the Infrakit KV module. Pair it with `@infrakit-team/modules/kv` to add durable key-value storage and dashboard metrics to your application without provisioning external infrastructure.
 
 ## Features
 
--   **Simple Client SDK**: `get`, `set`, and `del` methods for easy data manipulation.
--   **Time-To-Live (TTL)**: Set an automatic expiration time for any key.
--   **In-Memory Adapter**: Comes with `KeyValueMemoryAdapter` for fast, zero-dependency storage.
--   **Dashboard Integration**: Automatically integrates with the Infrakit dashboard to provide statistics, real-time monitoring, and data management tools.
+-   **Drop-in default**: Plug-and-play adapter for local development, testing, or caching scenarios.
+-   **Dashboard ready**: Exposes the metrics and data viewers required by the Infrakit dashboard.
+-   **Comprehensive typings**: Implements the shared `KeyValue` interface from `@infrakit-team/modules/kv`.
 
 ## Installation
 
 ```bash
-bun add @infrakit/modules/kv
+bun add @infrakit-team/module-kv-memory @infrakit-team/modules/kv @infrakit-team/sdk
 ```
 
 ## Usage
 
-### 1. Initialize with an Adapter
-
-To use the Key-Value module, initialize `InfraKit` with a storage adapter.
-
 ```typescript
-import { InfraKit } from "@infrakit/sdk";
-import { KeyValueMemoryAdapter } from "@infrakit/modules/kv";
+import { KeyValueMemoryAdapter } from "@infrakit-team/module-kv-memory";
+import { InfraKit } from "@infrakit-team/sdk";
 
 const infrakit = new InfraKit({
-  keyValue: {
-    adapter: new KeyValueMemoryAdapter(),
-  },
-});
-```
-
-### 2. Use the Client SDK
-
-The client is available on the `infrakit.keyValue` property.
-
-```typescript
-// Set a simple key-value pair
-infrakit.keyValue.set({
-  key: "user:1",
-  value: JSON.stringify({ name: "Alex" })
+  keyValue: new KeyValueMemoryAdapter(),
 });
 
-// Set a key with a 5-minute TTL
-infrakit.keyValue.set({
-  key: "cache:home",
-  value: "<!DOCTYPE html>...",
-  option: {
-    timeToLiveInMs: 300000,
-  },
-});
+const kv = infrakit.keyValue;
 
-// Get a value
-const userJson = infrakit.keyValue.get({ key: "user:1" });
-
-// Delete a key
-infrakit.keyValue.del({ key: "user:1" });
+kv.set({ key: "user:1", value: JSON.stringify({ name: "Alex" }) });
+const user = kv.get({ key: "user:1" });
 ```
 
-### Creating a Custom Adapter
+## Related Packages
 
-You can connect Infrakit to any storage backend (e.g., Redis, Postgres, filesystem) by creating a custom adapter. Your adapter must implement the `KeyValue` interface defined in `interface.ts`.
-
-```typescript
-import type { KeyValue } from "@infrakit/modules/kv";
-
-export class MyCustomKvAdapter implements KeyValue {
-  // Implement get, set, del methods...
-  // Implement the dashboard-specific methods...
-}
-```
-
+-   `@infrakit-team/modules/kv`: Core KV types and client.
+-   `@infrakit-team/modules/kv/test`: Helpers for testing KV integrations.

@@ -1,11 +1,11 @@
-# Infrakit Hono Adapter (`@infrakit/adapter/hono`)
+# Infrakit Hono Adapter (`@infrakit-team/ui-hono`)
 
 This package provides a dashboard adapter for Hono applications. It allows you to integrate the Infrakit dashboard into your Hono app using `app.route()`.
 
 ## Installation
 
 ```bash
-bun add @infrakit/adapter/hono hono
+bun add @infrakit-team/ui-hono @infrakit-team/module-kv-memory @infrakit-team/sdk hono
 ```
 
 ## Usage
@@ -16,9 +16,9 @@ bun add @infrakit/adapter/hono hono
 ### Example
 
 ```typescript
-import { HonoDashboardAdapter } from "@infrakit/adapter/hono";
-import { KeyValueMemoryAdapter } from "@infrakit/modules/kv";
-import { InfraKit } from "@infrakit/sdk";
+import { HonoDashboardAdapter } from "@infrakit-team/ui-hono";
+import { KeyValueMemoryAdapter } from "@infrakit-team/module-kv-memory";
+import { InfraKit } from "@infrakit-team/sdk";
 import { Hono } from "hono";
 
 // Initialize InfraKit

@@ -4,5 +4,7 @@ This directory contains the core infrastructure modules provided by Infrakit. Ea
 
 ## Available Modules
 
--   `./kv`: A powerful Key-Value store with an in-memory adapter, perfect for caching, session storage, and more.
-
+-   `./kv`: A powerful Key-Value store with dedicated packages for production use:
+    - `@infrakit-team/modules/kv`: Core KV module APIs.
+    - `@infrakit-team/module-kv-memory`: Default in-memory adapter.
+    - `@infrakit-team/modules/kv/test`: Test helpers for KV integrations.
