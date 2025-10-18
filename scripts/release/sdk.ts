@@ -6,5 +6,4 @@ export const sdkCommand = createReleaseCommand({
 	tagPrefix: "sdk",
 	displayName: "SDK",
 	packageJsonPaths: ["app/sdk/package.json"],
-	publishDirs: ["app/sdk"],
 });

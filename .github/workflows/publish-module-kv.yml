@@ -42,14 +42,7 @@ jobs:
               continue
             fi
             echo "Setting version for $pkg"
-            PACKAGE_PATH="$pkg/package.json" node - <<'EOF'
-const fs = require('fs');
-const path = process.env.PACKAGE_PATH;
-const version = process.env.VERSION;
-const pkg = JSON.parse(fs.readFileSync(path, 'utf8'));
-pkg.version = version;
-fs.writeFileSync(path, JSON.stringify(pkg, null, '\t') + '\n');
-EOF
+            PACKAGE_PATH="$pkg/package.json" node -e 'const fs = require("fs"); const path = process.env.PACKAGE_PATH; const version = process.env.VERSION; const pkg = JSON.parse(fs.readFileSync(path, "utf8")); pkg.version = version; fs.writeFileSync(path, JSON.stringify(pkg, null, "\t") + "\n");'
           done
 
       - name: Publish packages to npm
