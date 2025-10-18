@@ -50,6 +50,17 @@ Now, you can visit:
 -   `http://localhost:3000` to see the example application running.
 -   `http://localhost:3000/dashboard` to see the Infrakit dashboard.
 
+## UI Releases
+
+Use `bun run scripts/release/index.ts ui` to publish a new `ui-v*` release to GitHub.
+
+1. Ensure your working tree is clean, `main` (or the branch you want to release from) is up to date, and `gh auth status` succeeds.
+2. Run the script with the new version number. The script accepts `0.1.3`, `v0.1.3`, or the full tag name:
+    ```sh
+    bun run scripts/release/index.ts ui 0.1.3
+    ```
+3. The script generates notes with `git-cliff` and pushes the release via `gh release create`. Pass `--dry-run` (or `-d`) to preview commands without publishing.
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a pull request or open an issue.
