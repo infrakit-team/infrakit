@@ -54,6 +54,10 @@ Now, you can visit:
 
 Contributions are welcome! Please feel free to submit a pull request or open an issue.
 
+## License
+
+Infrakit is released under the MIT License. See the `LICENSE` file for details.
+
 ---
 
 *This project is currently in early development. APIs and packages are subject to change.*

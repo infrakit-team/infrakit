@@ -23,24 +23,23 @@ import { Hono } from "hono";
 
 // Initialize InfraKit
 const infrakit = new InfraKit({
-  keyValue:  new KeyValueMemoryAdapter(),
+  keyValue: new KeyValueMemoryAdapter(),
 });
 
 // Initialize the adapter
 const dashboardAdapter = new HonoDashboardAdapter({
   infrakit,
-  baseUrl: "/dashboard",
+  baseUrl: "/admin",
 });
 
 const app = new Hono();
 
 // Mount the dashboard as a route
-app.route("/dashboard", dashboardAdapter.endpoint);
+app.route("/admin", dashboardAdapter.endpoint);
 
 app.get("/", (c) => c.text("Hello from Hono!"));
 
 export default app;
 ```
 
-The adapter automatically handles all routes under `/dashboard`, including serving the UI and proxying API requests to the Infrakit SDK.
-
+The adapter automatically handles all routes under `/admin`, including serving the UI and proxying API requests to the Infrakit SDK.
