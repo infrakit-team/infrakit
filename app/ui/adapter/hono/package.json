@@ -1,0 +1,7 @@
+{
+	"name": "@infrakit-team/ui/hono",
+	"dependencies": {
+		"@infrakit-team/sdk": "workspace:*",
+		"hono": "^4.9.9"
+	}
+}

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "bun:test";
-import type { KeyValue } from "./interface";
+import type { KeyValue } from "@infrakit-team/modules/kv";
 
 export type KeyValueAdapterFactory = () => KeyValue;
 

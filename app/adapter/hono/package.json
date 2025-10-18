@@ -1,8 +1,0 @@
-{
-	"name": "@infrakit/adapter/hono",
-	"dependencies": {
-		"@infrakit/modules/kv": "workspace:*",
-		"@infrakit/sdk": "workspace:*",
-		"hono": "^4.9.9"
-	}
-}

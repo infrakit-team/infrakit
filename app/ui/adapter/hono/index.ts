@@ -1,4 +1,4 @@
-import type { InfraKit } from "@infrakit/sdk";
+import type { InfraKit } from "@infrakit-team/sdk";
 import { Hono } from "hono";
 
 export class HonoDashboardAdapter {
@@ -94,7 +94,7 @@ const createHtml = (input: {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Infrakit</title>
-    <link href="https://unpkg.com/@infrakit/ui@latest/dist/index.css" rel="stylesheet">
+    <link href="https://unpkg.com/@infrakit-team/ui@latest/dist/index.css" rel="stylesheet">
   </head>
   <body>
     <div id="app"></div>
@@ -105,7 +105,7 @@ const createHtml = (input: {
         enabledModules: ${JSON.stringify(input.enabledModules)}
       };
     </script>
-    <script type="module" src="https://unpkg.com/@infrakit/ui@latest/dist/index.js"></script>
+    <script type="module" src="https://unpkg.com/@infrakit-team/ui@latest/dist/index.js"></script>
   </body>
 </html>
 `;

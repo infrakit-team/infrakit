@@ -1,0 +1,9 @@
+{
+	"name": "@infrakit-team/modules/kv/test",
+	"exports": {
+		".": "./index.ts"
+	},
+  "dependencies": {
+    "@infrakit-team/modules/kv": "workspace:*"
+  }
+}

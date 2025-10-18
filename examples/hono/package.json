@@ -1,9 +1,9 @@
 {
-	"name": "@infrakit/examples/hono",
+	"name": "@infrakit-team/examples/hono",
 	"dependencies": {
 		"hono": "^4.9.9",
-		"@infrakit/modules/kv": "workspace:*",
-		"@infrakit/sdk": "workspace:*",
-		"@infrakit/adapter/hono": "workspace:*"
+		"@infrakit-team/modules/kv/adapter-memory": "workspace:*",
+		"@infrakit-team/sdk": "workspace:*",
+		"@infrakit-team/ui/hono": "workspace:*"
 	}
 }

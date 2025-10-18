@@ -1,9 +1,0 @@
-{
-	"name": "@infrakit/adapter/exrpess",
-	"dependencies": {
-		"@infrakit/modules/kv": "workspace:*",
-		"@infrakit/sdk": "workspace:*",
-		"@types/express": "^5.0.3",
-		"express": "^5.1.0"
-	}
-}

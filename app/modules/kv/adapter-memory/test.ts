@@ -1,4 +1,4 @@
-import { KeyValueMemoryAdapter } from "./memory.adapter";
+import { KeyValueMemoryAdapter } from "./index";
 import { runKeyValueAdapterContractTests } from "./keyvalue.contract";
 
 runKeyValueAdapterContractTests("KeyValueMemoryAdapter", () => {

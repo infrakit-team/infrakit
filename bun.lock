@@ -3,32 +3,50 @@
   "workspaces": {
     "": {
       "name": "@infrakit/mono",
-    },
-    "app/adapter/express": {
-      "name": "@infrakit/adapter/exrpess",
       "dependencies": {
-        "@infrakit/modules/kv": "workspace:*",
-        "@infrakit/sdk": "workspace:*",
+        "typescript": "^5.9.3",
+      },
+    },
+    "app/cli": {
+      "name": "@infrakit-team/cli",
+    },
+    "app/modules/kv/adapter-memory": {
+      "name": "@infrakit-team/modules/kv/adapter-memory",
+      "dependencies": {
+        "@infrakit-team/modules/kv": "workspace:*",
+        "@infrakit-team/modules/kv/test": "workspace:*",
+      },
+    },
+    "app/modules/kv/core": {
+      "name": "@infrakit-team/modules/kv",
+    },
+    "app/modules/kv/test": {
+      "name": "@infrakit-team/modules/kv/test",
+      "dependencies": {
+        "@infrakit-team/modules/kv": "workspace:*",
+      },
+    },
+    "app/sdk": {
+      "name": "@infrakit-team/sdk",
+    },
+    "app/ui/adapter/express": {
+      "name": "@infrakit-team/ui/exrpess",
+      "dependencies": {
+        "@infrakit-team/sdk": "workspace:*",
         "@types/express": "^5.0.3",
         "express": "^5.1.0",
       },
     },
-    "app/adapter/hono": {
-      "name": "@infrakit/adapter/hono",
+    "app/ui/adapter/hono": {
+      "name": "@infrakit-team/ui/hono",
       "dependencies": {
-        "@infrakit/modules/kv": "workspace:*",
-        "@infrakit/sdk": "workspace:*",
+        "@infrakit-team/sdk": "workspace:*",
         "hono": "^4.9.9",
       },
     },
-    "app/modules/kv": {
-      "name": "@infrakit/modules/kv",
-    },
-    "app/sdk": {
-      "name": "@infrakit/sdk",
-    },
-    "app/ui": {
-      "name": "@infrakit/ui",
+    "app/ui/core": {
+      "name": "@infrakit-team/ui",
+      "version": "0.1.0",
       "dependencies": {
         "@kobalte/core": "^0.13.11",
         "@solid-primitives/scheduled": "^1.5.2",
@@ -54,26 +72,26 @@
       },
     },
     "examples/express": {
-      "name": "@infrakit/examples/express",
+      "name": "@infrakit-team/examples/express",
       "dependencies": {
-        "@infrakit/adapter/hono": "workspace:*",
-        "@infrakit/modules/kv": "workspace:*",
-        "@infrakit/sdk": "workspace:*",
+        "@infrakit-team/modules/kv/adapter-memory": "workspace:*",
+        "@infrakit-team/sdk": "workspace:*",
+        "@infrakit-team/ui/hono": "workspace:*",
         "@types/express": "^5.0.3",
         "express": "^5.1.0",
       },
     },
     "examples/hono": {
-      "name": "@infrakit/examples/hono",
+      "name": "@infrakit-team/examples/hono",
       "dependencies": {
-        "@infrakit/adapter/hono": "workspace:*",
-        "@infrakit/modules/kv": "workspace:*",
-        "@infrakit/sdk": "workspace:*",
+        "@infrakit-team/modules/kv/adapter-memory": "workspace:*",
+        "@infrakit-team/sdk": "workspace:*",
+        "@infrakit-team/ui/hono": "workspace:*",
         "hono": "^4.9.9",
       },
     },
     "website": {
-      "name": "@infrakit/website",
+      "name": "@infrakit-team/website",
       "version": "0.0.1",
       "dependencies": {
         "@astrojs/cloudflare": "^12.6.10",
@@ -298,21 +316,27 @@
 
     "@img/sharp-win32-x64": ["@img/sharp-win32-x64@0.34.4", "", { "os": "win32", "cpu": "x64" }, "sha512-xIyj4wpYs8J18sVN3mSQjwrw7fKUqRw+Z5rnHNCy5fYTxigBz81u5mOMPmFumwjcn8+ld1ppptMBCLic1nz6ig=="],
 
-    "@infrakit/adapter/exrpess": ["@infrakit/adapter/exrpess@workspace:app/adapter/express"],
+    "@infrakit-team/cli": ["@infrakit-team/cli@workspace:app/cli"],
 
-    "@infrakit/adapter/hono": ["@infrakit/adapter/hono@workspace:app/adapter/hono"],
+    "@infrakit-team/examples/express": ["@infrakit-team/examples/express@workspace:examples/express"],
 
-    "@infrakit/examples/express": ["@infrakit/examples/express@workspace:examples/express"],
+    "@infrakit-team/examples/hono": ["@infrakit-team/examples/hono@workspace:examples/hono"],
 
-    "@infrakit/examples/hono": ["@infrakit/examples/hono@workspace:examples/hono"],
+    "@infrakit-team/modules/kv": ["@infrakit-team/modules/kv@workspace:app/modules/kv/core"],
 
-    "@infrakit/modules/kv": ["@infrakit/modules/kv@workspace:app/modules/kv"],
+    "@infrakit-team/modules/kv/adapter-memory": ["@infrakit-team/modules/kv/adapter-memory@workspace:app/modules/kv/adapter-memory"],
 
-    "@infrakit/sdk": ["@infrakit/sdk@workspace:app/sdk"],
+    "@infrakit-team/modules/kv/test": ["@infrakit-team/modules/kv/test@workspace:app/modules/kv/test"],
 
-    "@infrakit/ui": ["@infrakit/ui@workspace:app/ui"],
+    "@infrakit-team/sdk": ["@infrakit-team/sdk@workspace:app/sdk"],
 
-    "@infrakit/website": ["@infrakit/website@workspace:website"],
+    "@infrakit-team/ui": ["@infrakit-team/ui@workspace:app/ui/core"],
+
+    "@infrakit-team/ui/exrpess": ["@infrakit-team/ui/exrpess@workspace:app/ui/adapter/express"],
+
+    "@infrakit-team/ui/hono": ["@infrakit-team/ui/hono@workspace:app/ui/adapter/hono"],
+
+    "@infrakit-team/website": ["@infrakit-team/website@workspace:website"],
 
     "@internationalized/date": ["@internationalized/date@3.10.0", "", { "dependencies": { "@swc/helpers": "^0.5.0" } }, "sha512-oxDR/NTEJ1k+UFVQElaNIk65E/Z83HK1z1WI3lQyhTtnNg4R5oVXaPzK3jcpKG8UHKDVuDQHzn+wsxSz8RP3aw=="],
 

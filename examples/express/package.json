@@ -1,9 +1,9 @@
 {
-	"name": "@infrakit/examples/express",
+	"name": "@infrakit-team/examples/express",
 	"dependencies": {
-		"@infrakit/adapter/hono": "workspace:*",
-		"@infrakit/modules/kv": "workspace:*",
-		"@infrakit/sdk": "workspace:*",
+		"@infrakit-team/ui/hono": "workspace:*",
+		"@infrakit-team/modules/kv/adapter-memory": "workspace:*",
+		"@infrakit-team/sdk": "workspace:*",
 		"@types/express": "^5.0.3",
 		"express": "^5.1.0"
 	}

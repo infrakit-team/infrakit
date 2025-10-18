@@ -16,9 +16,9 @@
     "lib": ["es2022"],
     "baseUrl": ".",
     "paths": {
-      "@infrakit/modules/*": ["./app/modules/*"],
-      "@infrakit/adapter/*": ["./app/adapter/*"],
-      "@infrakit/sdk": ["./app/sdk"]
+      "@infrakit-team/modules/*": ["./app/modules/*"],
+      "@infrakit-team/ui/*": ["./app/ui/adapter/*"],
+      "@infrakit-team/sdk": ["./app/sdk"]
     }
   }
 }

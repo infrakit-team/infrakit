@@ -1,0 +1,8 @@
+{
+	"name": "@infrakit-team/ui/exrpess",
+	"dependencies": {
+		"@infrakit-team/sdk": "workspace:*",
+		"@types/express": "^5.0.3",
+		"express": "^5.1.0"
+	}
+}

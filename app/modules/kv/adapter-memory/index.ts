@@ -1,4 +1,4 @@
-import type { KeyValue, KeyValueItem, KeyValueOption } from "./interface";
+import type { KeyValue, KeyValueItem, KeyValueOption } from "@infrakit-team/modules/kv";
 
 export class KeyValueMemoryAdapter implements KeyValue {
 	private readonly map = new Map<string, KeyValueItem>();
