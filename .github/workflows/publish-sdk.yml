@@ -15,6 +15,12 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
       - name: Install dependencies
         run: bun install
 
@@ -27,7 +33,14 @@ jobs:
             exit 1
           fi
           export VERSION
-          PACKAGE_PATH="app/sdk/package.json" bun --eval "const fs = require('fs'); const path = process.env.PACKAGE_PATH; const version = process.env.VERSION; const pkg = JSON.parse(fs.readFileSync(path, 'utf8')); pkg.version = version; fs.writeFileSync(path, JSON.stringify(pkg, null, '\t') + '\n');"
+          PACKAGE_PATH="app/sdk/package.json" node - <<'EOF'
+const fs = require('fs');
+const path = process.env.PACKAGE_PATH;
+const version = process.env.VERSION;
+const pkg = JSON.parse(fs.readFileSync(path, 'utf8'));
+pkg.version = version;
+fs.writeFileSync(path, JSON.stringify(pkg, null, '\t') + '\n');
+EOF
 
       - name: Publish package to npm
         env:

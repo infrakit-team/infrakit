@@ -1,5 +1,21 @@
 {
 	"name": "@infrakit-team/ui-hono",
+	"version": "0.1.0",
+	"private": false,
+	"license": "MIT",
+	"files": [
+		"dist"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"build": "bun build index.ts --outdir ./dist",
+		"prepublishOnly": "bun run build"
+	},
+	"exports": {
+		".": "./index.ts"
+	},
 	"dependencies": {
 		"@infrakit-team/sdk": "workspace:*",
 		"hono": "^4.9.9"
