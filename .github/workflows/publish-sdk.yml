@@ -1,0 +1,36 @@
+name: Publish SDK Package
+
+on:
+  push:
+    tags:
+      - sdk-v*
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Set package version from tag
+        run: |
+          TAG_NAME="${GITHUB_REF_NAME}"
+          VERSION="${TAG_NAME#sdk-v}"
+          if [ -z "$VERSION" ] || [ "$VERSION" = "$TAG_NAME" ]; then
+            echo "Tag '$TAG_NAME' does not follow the expected 'sdk-v*' pattern."
+            exit 1
+          fi
+          export VERSION
+          PACKAGE_PATH="app/sdk/package.json" bun --eval "const fs = require('fs'); const path = process.env.PACKAGE_PATH; const version = process.env.VERSION; const pkg = JSON.parse(fs.readFileSync(path, 'utf8')); pkg.version = version; fs.writeFileSync(path, JSON.stringify(pkg, null, '\t') + '\n');"
+
+      - name: Publish package to npm
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
+        working-directory: app/sdk
+        run: bun publish --access public

@@ -2,6 +2,8 @@
 import { $ } from "bun";
 import { command, run } from "@drizzle-team/brocli";
 import { uiCommand } from "./ui";
+import { sdkCommand } from "./sdk";
+import { modulesCommand } from "./modules";
 
 $.throws(true);
 
@@ -13,7 +15,7 @@ const showStack = (() => {
 const releaseCommand = command({
 	name: "release",
 	desc: "Release automation utilities",
-	subcommands: [uiCommand],
+	subcommands: [uiCommand, sdkCommand, modulesCommand],
 	handler: () => {
 		console.log("Specify a subcommand. Try `--help` for usage.");
 	},
