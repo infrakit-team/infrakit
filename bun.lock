@@ -13,18 +13,19 @@
     },
     "app/modules/kv/adapter-memory": {
       "name": "@infrakit-team/module-kv-memory",
+      "version": "0.1.0",
       "dependencies": {
-        "@infrakit-team/modules/kv": "workspace:*",
-        "@infrakit-team/modules/kv/test": "workspace:*",
+        "@infrakit-team/module-kv": "workspace:*",
+        "@infrakit-team/module-kv-test": "workspace:*",
       },
     },
     "app/modules/kv/core": {
-      "name": "@infrakit-team/modules/kv",
+      "name": "@infrakit-team/module-kv",
     },
     "app/modules/kv/test": {
-      "name": "@infrakit-team/modules/kv/test",
+      "name": "@infrakit-team/module-kv-test",
       "dependencies": {
-        "@infrakit-team/modules/kv": "workspace:*",
+        "@infrakit-team/module-kv": "workspace:*",
       },
     },
     "app/sdk": {
@@ -325,11 +326,11 @@
 
     "@infrakit-team/examples/hono": ["@infrakit-team/examples/hono@workspace:examples/hono"],
 
+    "@infrakit-team/module-kv": ["@infrakit-team/module-kv@workspace:app/modules/kv/core"],
+
     "@infrakit-team/module-kv-memory": ["@infrakit-team/module-kv-memory@workspace:app/modules/kv/adapter-memory"],
 
-    "@infrakit-team/modules/kv": ["@infrakit-team/modules/kv@workspace:app/modules/kv/core"],
-
-    "@infrakit-team/modules/kv/test": ["@infrakit-team/modules/kv/test@workspace:app/modules/kv/test"],
+    "@infrakit-team/module-kv-test": ["@infrakit-team/module-kv-test@workspace:app/modules/kv/test"],
 
     "@infrakit-team/sdk": ["@infrakit-team/sdk@workspace:app/sdk"],
 

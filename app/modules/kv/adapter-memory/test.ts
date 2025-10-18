@@ -1,5 +1,5 @@
 import { KeyValueMemoryAdapter } from "./index";
-import { runKeyValueAdapterContractTests } from "./keyvalue.contract";
+import { runKeyValueAdapterContractTests } from "@infrakit-team/module-kv-test";
 
 runKeyValueAdapterContractTests("KeyValueMemoryAdapter", () => {
 	return new KeyValueMemoryAdapter();

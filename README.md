@@ -51,7 +51,7 @@ Now, you can visit:
 
 ## Releases
 
-Use `bun run scripts/release/index.ts release <target>` to publish GitHub releases. The helper enforces `<target>-v<semver>` tag formats, checks for a clean, pushed branch, and generates notes with `git-cliff`. Set `RELEASE_DEBUG=true` to surface full stack traces when debugging failures.
+Use `bun run scripts/release/index.ts release <target>` to publish GitHub releases. The helper enforces `<target>-v<semver>` tag formats, checks for a clean, pushed branch, updates the relevant `package.json` files to the requested version, and generates notes with `git-cliff`. Set `RELEASE_DEBUG=true` to surface full stack traces when debugging failures.
 
 ### UI (`ui-v*`)
 

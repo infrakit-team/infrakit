@@ -5,4 +5,5 @@ export const sdkCommand = createReleaseCommand({
 	desc: "Create a GitHub release for the SDK package",
 	tagPrefix: "sdk",
 	displayName: "SDK",
+	packageJsonPaths: ["app/sdk/package.json"],
 });

@@ -1,5 +1,5 @@
 {
-	"name": "@infrakit-team/modules/kv",
+	"name": "@infrakit-team/module-kv",
 	"exports": {
 		".": "./index.ts"
 	}

@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -139,6 +139,7 @@ export interface ReleaseCommandConfig {
 	desc: string;
 	tagPrefix: string;
 	displayName: string;
+	packageJsonPaths?: string[];
 }
 
 const ensureCommands = () => {
@@ -173,6 +174,16 @@ const validateVersion = (prefix: string, tag: string) => {
 			`Version must match ${prefix}-v<major>.<minor>.<patch> (examples: 0.1.3, v0.1.3, ${prefix}-v0.1.3).`,
 		);
 	}
+};
+
+const extractVersion = (prefix: string, tag: string) => {
+	const expected = `${prefix}-v`;
+	if (!tag.startsWith(expected)) {
+		throw new Error(
+			`Normalized tag ${tag} does not start with expected prefix ${expected}.`,
+		);
+	}
+	return tag.slice(expected.length);
 };
 
 const ensureTagDoesNotExist = async (tag: string) => {
@@ -250,6 +261,22 @@ const ensureHeadPushed = async () => {
 	}
 };
 
+const updatePackageVersions = (
+	repoRoot: string,
+	paths: string[],
+	version: string,
+) => {
+	for (const relativePath of paths) {
+		const packagePath = join(repoRoot, relativePath);
+		const contents = readFileSync(packagePath, "utf8");
+		const pkg = JSON.parse(contents) as Record<string, unknown>;
+		pkg.version = version;
+		const serialized = JSON.stringify(pkg, null, "\t");
+		writeFileSync(packagePath, `${serialized}\n`, "utf8");
+		console.log(`  - Set ${relativePath} version to ${version}`);
+	}
+};
+
 const createRelease = async (tag: string, notes: string, dryRun: boolean) => {
 	const targetCommit = (await $`git rev-parse HEAD`.text()).trim();
 	console.log(`Creating ${tag} from ${targetCommit}`);
@@ -285,6 +312,7 @@ export const createReleaseCommand = (config: ReleaseCommandConfig) => {
 	};
 
 	type ReleaseOptions = TypeOf<typeof releaseOptions>;
+	const packageJsonPaths = config.packageJsonPaths ?? [];
 
 	return command({
 		name: config.name,
@@ -304,6 +332,7 @@ export const createReleaseCommand = (config: ReleaseCommandConfig) => {
 				return normalized;
 			});
 			console.log(`Normalized tag: ${tag}`);
+			const semver = extractVersion(config.tagPrefix, tag);
 
 			await runStep("checking for existing tag or release", () =>
 				ensureTagDoesNotExist(tag),
@@ -313,6 +342,12 @@ export const createReleaseCommand = (config: ReleaseCommandConfig) => {
 				"verifying upstream branch is synchronized",
 				ensureHeadPushed,
 			);
+
+			if (packageJsonPaths.length > 0) {
+				await runStep("updating package.json versions", () =>
+					updatePackageVersions(repoRoot, packageJsonPaths, semver),
+				);
+			}
 
 			const previousTag = await runStep(
 				`locating previous ${config.displayName} tag`,
