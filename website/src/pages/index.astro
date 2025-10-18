@@ -66,6 +66,143 @@ const comingSoonModules = [
 const backendProviders = ['Memory', 'Postgres (soon)', 'Redis (soon)', 'MySQL (soon)', 'More...'];
 const frontendIntegrations = ['Express', 'Hono', 'Fastify', 'H3', 'Koa', 'Next.js'];
 
+const codeExamples = {
+  module: {
+    keyvalue: {
+      memory: `import { InfraKit } from "@infrakit/sdk";
+import { KeyValueMemoryAdapter } from "@infrakit/modules/kv";
+
+const infrakit = new InfraKit({
+  keyValue: new KeyValueMemoryAdapter()
+});
+
+// Use the key-value store
+await infrakit.keyValue.set('user:123', { name: 'Alice' });
+const user = await infrakit.keyValue.get('user:123');`,
+
+      postgres: `import { InfraKit } from "@infrakit/sdk";
+import { KeyValuePostgresAdapter } from "@infrakit/modules/kv";
+
+const infrakit = new InfraKit({
+  keyValue: new KeyValuePostgresAdapter({
+    connectionString: process.env.DATABASE_URL
+  })
+});
+
+// Same API, different backend
+await infrakit.keyValue.set('user:123', { name: 'Alice' });
+const user = await infrakit.keyValue.get('user:123');`,
+
+      redis: `import { InfraKit } from "@infrakit/sdk";
+import { KeyValueRedisAdapter } from "@infrakit/modules/kv";
+
+const infrakit = new InfraKit({
+  keyValue: new KeyValueRedisAdapter({
+    host: process.env.REDIS_HOST,
+    port: 6379
+  })
+});
+
+// Same API, Redis backend
+await infrakit.keyValue.set('user:123', { name: 'Alice' });
+const user = await infrakit.keyValue.get('user:123');`
+    }
+  },
+
+  dashboard: {
+    express: `import express from 'express';
+import { ExpressDashboardAdapter } from "@infrakit/adapter/express";
+
+const app = express();
+
+// Mount dashboard to Express app
+const dashboard = new ExpressDashboardAdapter({
+  infrakit,
+  baseUrl: '/admin'
+});
+
+app.use('/admin', dashboard.endpoint);
+app.listen(3000);`,
+
+    hono: `import { Hono } from 'hono';
+import { HonoDashboardAdapter } from "@infrakit/adapter/hono";
+
+const app = new Hono();
+
+// Mount dashboard to Hono app
+const dashboard = new HonoDashboardAdapter({
+  infrakit,
+  baseUrl: '/admin'
+});
+
+app.route('/admin', dashboard.endpoint);`,
+
+    fastify: `import Fastify from 'fastify';
+import { FastifyDashboardAdapter } from "@infrakit/adapter/fastify";
+
+const fastify = Fastify();
+
+// Mount dashboard to Fastify app
+const dashboard = new FastifyDashboardAdapter({
+  infrakit,
+  baseUrl: '/admin'
+});
+
+fastify.register(dashboard.plugin, { prefix: '/admin' });`
+  }
+};
+
+const defaultModule = "keyvalue";
+const defaultAdapter = "memory";
+const defaultDashboard = "express";
+
+const keyValueEntries = [
+  {
+    key: "session:user:10000",
+    value: `{"userId":10000,"name":"Alice"}`,
+    createdAt: "Oct 17, 2025, 12:16 PM",
+    ttl: "No expiry",
+  },
+  {
+    key: "session:user:10001",
+    value: `{"userId":10001,"name":"Evan"}`,
+    createdAt: "Oct 17, 2025, 12:16 PM",
+    ttl: "No expiry",
+  },
+  {
+    key: "session:user:10002",
+    value: `{"userId":10002,"name":"Lina"}`,
+    createdAt: "Oct 17, 2025, 12:16 PM",
+    ttl: "2h 15m",
+  },
+  {
+    key: "session:user:10003",
+    value: `{"userId":10003,"name":"Sanjay"}`,
+    createdAt: "Oct 17, 2025, 12:16 PM",
+    ttl: "No expiry",
+  },
+  {
+    key: "session:user:10004",
+    value: `{"userId":10004,"name":"Maya"}`,
+    createdAt: "Oct 17, 2025, 12:16 PM",
+    ttl: "48m",
+  },
+  {
+    key: "session:user:10005",
+    value: `{"userId":10005,"name":"Felix"}`,
+    createdAt: "Oct 17, 2025, 12:16 PM",
+    ttl: "No expiry",
+  },
+];
+
+const paginationSummary = {
+  selected: 0,
+  total: keyValueEntries.length,
+  rowsPerPage: 10,
+  page: 1,
+  totalPages: 97,
+};
+
 const footerLinks = {
   resources: [{
     label: 'Documentation',
@@ -157,11 +294,342 @@ const footerLinks = {
       </div>
     </section>
 
-    <!-- Modules Section -->
+    <!-- Architecture Diagram Section -->
     <section class="py-24 bg-primary-1 relative overflow-hidden">
       <div class="absolute inset-0 bg-gradient-to-br from-primary-2 via-primary-2 to-primary-1"></div>
       <div class="absolute top-1/4 right-1/3 w-[32rem] h-[32rem] bg-primary-9 rounded-full mix-blend-multiply filter blur-3xl opacity-5"></div>
       <div class="relative max-w-7xl mx-auto px-6">
+        
+        <div class="text-center mb-16">
+          <span class="inline-block text-[0.8125rem] font-semibold text-primary-11 tracking-[0.1em] uppercase mb-4 px-3.5 py-1.5 bg-primary-3 rounded-md">
+            Architecture
+          </span>
+          <h2 class="text-4xl font-bold text-primary-12 mb-4">How It Works</h2>
+          <p class="text-xl text-primary-11 max-w-3xl mx-auto">
+            Mix and match modules with adapters, then view everything through one unified dashboard.
+          </p>
+        </div>
+
+        <!-- Top Row: Modules + Adapters and Dashboard Adapters -->
+        <div class="grid lg:grid-cols-2 gap-8 mb-12">
+          
+          <!-- Left: Modules + Module Adapters -->
+          <div class="bg-primary-2 border-2 border-primary-6 rounded-2xl p-8">
+            <h3 class="text-lg font-bold text-primary-12 mb-6 flex items-center gap-2">
+              <span>Modules + Module Adapter</span>
+            </h3>
+            
+            <!-- Modules Row -->
+            <div class="flex gap-3 mb-6 justify-center">
+              <button 
+                class="module-btn bg-primary-1 border border-primary-9 rounded-lg px-4 py-2.5 text-sm font-semibold text-primary-12 shadow-sm hover:bg-primary-3 transition-all cursor-pointer"
+                data-module="keyvalue"
+              >
+                KeyValue
+              </button>
+              <button 
+                class="module-btn bg-primary-1 border border-primary-6 rounded-lg px-4 py-2.5 text-sm font-semibold text-primary-11 opacity-60 cursor-not-allowed"
+                disabled
+              >
+                Queue
+              </button>
+              <button 
+                class="module-btn bg-primary-1 border border-primary-6 rounded-lg px-4 py-2.5 text-sm font-semibold text-primary-11 opacity-60 cursor-not-allowed"
+                disabled
+              >
+                Cron
+              </button>
+            </div>
+
+            <!-- Connection Lines (Visual) -->
+            <div class="flex justify-center mb-6">
+              <div class="relative w-48 h-12">
+                <svg class="w-full h-full" viewBox="0 0 200 50">
+                  <line x1="33" y1="0" x2="33" y2="50" stroke="currentColor" stroke-width="2" class="text-primary-7" stroke-dasharray="4 4"/>
+                  <line x1="100" y1="0" x2="66" y2="50" stroke="currentColor" stroke-width="2" class="text-primary-6" stroke-dasharray="4 4"/>
+                  <line x1="167" y1="0" x2="133" y2="50" stroke="currentColor" stroke-width="2" class="text-primary-6" stroke-dasharray="4 4"/>
+                  <line x1="33" y1="0" x2="100" y2="50" stroke="currentColor" stroke-width="2" class="text-primary-7" stroke-dasharray="4 4"/>
+                  <line x1="100" y1="0" x2="100" y2="50" stroke="currentColor" stroke-width="2" class="text-primary-6" stroke-dasharray="4 4"/>
+                  <line x1="167" y1="0" x2="100" y2="50" stroke="currentColor" stroke-width="2" class="text-primary-6" stroke-dasharray="4 4"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Adapters Row -->
+            <div id="adapter-buttons" class="flex gap-3 justify-center mb-6">
+              <button class="adapter-btn bg-primary-1 border border-primary-6 rounded-lg px-4 py-2.5 text-sm font-semibold text-primary-12 hover:bg-primary-3 transition-all cursor-pointer" data-adapter="postgres">
+                Postgres
+              </button>
+              <button class="adapter-btn bg-primary-1 border border-primary-6 rounded-lg px-4 py-2.5 text-sm font-semibold text-primary-12 hover:bg-primary-3 transition-all cursor-pointer" data-adapter="redis">
+                Redis
+              </button>
+              <button class="adapter-btn bg-primary-1 border border-primary-9 rounded-lg px-4 py-2.5 text-sm font-semibold text-primary-12 shadow-sm hover:bg-primary-3 transition-all cursor-pointer" data-adapter="memory">
+                Memory
+              </button>
+            </div>
+
+            <!-- Code Display Area -->
+            <div
+              id="module-code-display"
+              class="bg-primary-1 border-2 border-primary-6 rounded-xl overflow-hidden"
+              data-default-module={defaultModule}
+              data-default-adapter={defaultAdapter}
+            >
+              <div class="flex items-center gap-2 px-4 py-3 bg-primary-3 border-b border-primary-6">
+                <div class="w-3 h-3 rounded-full bg-primary-6"></div>
+                <div class="w-3 h-3 rounded-full bg-primary-6"></div>
+                <div class="w-3 h-3 rounded-full bg-primary-6"></div>
+              </div>
+              <div class="relative">
+                {Object.entries(codeExamples.module.keyvalue).map(([adapter, code]) => (
+                  <div
+                    class="module-code-snippet"
+                    data-module="keyvalue"
+                    data-adapter={adapter}
+                    data-code-example
+                    hidden={adapter !== defaultAdapter}
+                    aria-hidden={adapter !== defaultAdapter}
+                  >
+                    <Code
+                      code={code}
+                      lang="ts"
+                      theme="github-light"
+                      class="p-4 text-xs leading-relaxed overflow-x-auto"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Dashboard Adapters -->
+          <div class="bg-primary-2 border-2 border-primary-6 rounded-2xl p-8">
+            <h3 class="text-lg font-bold text-primary-12 mb-6">Dashboard Adapter</h3>
+            
+            <div class="flex gap-3 justify-center mb-6">
+              <button class="dashboard-adapter-btn bg-primary-1 border border-primary-9 rounded-lg px-4 py-2.5 text-sm font-semibold text-primary-12 shadow-sm hover:bg-primary-3 transition-all cursor-pointer" data-framework="express">
+                Express
+              </button>
+              <button class="dashboard-adapter-btn bg-primary-1 border border-primary-6 rounded-lg px-4 py-2.5 text-sm font-semibold text-primary-12 hover:bg-primary-3 transition-all cursor-pointer" data-framework="hono">
+                Hono
+              </button>
+              <button class="dashboard-adapter-btn bg-primary-1 border border-primary-6 rounded-lg px-4 py-2.5 text-sm font-semibold text-primary-12 hover:bg-primary-3 transition-all cursor-pointer" data-framework="fastify">
+                Fastify
+              </button>
+            </div>
+
+            <div class="text-center mb-6">
+              <div class="inline-flex items-center gap-2 text-primary-11 text-sm">
+                <span>Mounts into your server</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Dashboard Code Display Area -->
+            <div
+              id="dashboard-code-display"
+              class="bg-primary-1 border-2 border-primary-6 rounded-xl overflow-hidden"
+              data-default-dashboard={defaultDashboard}
+            >
+              <div class="flex items-center gap-2 px-4 py-3 bg-primary-3 border-b border-primary-6">
+                <div class="w-3 h-3 rounded-full bg-primary-6"></div>
+                <div class="w-3 h-3 rounded-full bg-primary-6"></div>
+                <div class="w-3 h-3 rounded-full bg-primary-6"></div>
+              </div>
+              <div class="relative">
+                {Object.entries(codeExamples.dashboard).map(([framework, code]) => (
+                  <div
+                    class="dashboard-code-snippet"
+                    data-framework={framework}
+                    data-dashboard-code
+                    hidden={framework !== defaultDashboard}
+                    aria-hidden={framework !== defaultDashboard}
+                  >
+                    <Code
+                      code={code}
+                      lang="ts"
+                      theme="github-light"
+                      class="p-4 text-xs leading-relaxed overflow-x-auto"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-gradient-to-br from-primary-2/90 to-primary-3/80 border-2 border-primary-6 rounded-3xl p-10 shadow-xl">
+          <div class="max-w-4xl mx-auto space-y-6">
+            <div class="text-center md:text-left space-y-2 text-primary-11">
+              <span class="inline-flex items-center gap-2 rounded-full border border-primary-6 bg-primary-1/80 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-primary-10">
+                Website + Dashboard
+              </span>
+              <h3 class="text-2xl font-semibold text-primary-12">
+                Launch your product site and get <span class="font-bold">acme.com/admin</span> for free.
+              </h3>
+              <p class="text-sm md:text-base">
+                InfraKit ships a production-ready admin at <span class="font-mono text-primary-12">/admin</span> so you can focus on your customer-facing experience.
+              </p>
+            </div>
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div class="relative w-full sm:max-w-sm">
+                <svg class="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-primary-11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <circle cx="11" cy="11" r="7"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input
+                  type="search"
+                  placeholder="Search keys…"
+                  class="w-full rounded-xl border border-primary-6 bg-primary-1/80 py-2.5 pl-11 pr-4 text-sm text-primary-12 shadow-sm placeholder:text-primary-10 focus:border-primary-8 focus:outline-none focus:ring-2 focus:ring-primary-7/40"
+                />
+              </div>
+              <button class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-12 px-4 py-2 text-sm font-semibold text-primary-1 shadow-lg transition hover:bg-primary-11">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <line x1="12" y1="5" x2="12" y2="19" stroke-linecap="round"></line>
+                  <line x1="5" y1="12" x2="19" y2="12" stroke-linecap="round"></line>
+                </svg>
+                Add Key
+              </button>
+            </div>
+
+            <div class="bg-primary-1/90 border border-primary-6 rounded-2xl overflow-hidden shadow-2xl">
+              <div class="flex items-center justify-between border-b border-primary-6 bg-primary-2/40 px-6 py-3 text-xs font-medium text-primary-11">
+                <div class="flex items-center gap-2">
+                  <span class="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
+                  <span class="font-mono text-primary-12">https://acme.com/admin</span>
+                </div>
+                <span class="hidden sm:inline text-primary-10">Built-in InfraKit Dashboard</span>
+              </div>
+              <div class="flex items-center justify-between border-b border-primary-6 bg-primary-2/60 px-6 py-4">
+                <div>
+                  <h3 class="text-lg font-semibold text-primary-12">Key-Value Store</h3>
+                  <p class="text-sm text-primary-11">Managing {keyValueEntries.length} keys across all adapters</p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <button class="inline-flex items-center gap-2 rounded-lg border border-primary-6 bg-primary-1 px-3 py-1.5 text-sm font-medium text-primary-11 transition hover:bg-primary-3 hover:text-primary-12">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <line x1="4" y1="6" x2="20" y2="6" stroke-linecap="round"></line>
+                      <line x1="4" y1="12" x2="20" y2="12" stroke-linecap="round"></line>
+                      <line x1="4" y1="18" x2="20" y2="18" stroke-linecap="round"></line>
+                    </svg>
+                    Filters
+                  </button>
+                </div>
+              </div>
+
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-primary-12">
+                  <thead class="border-b border-primary-6 bg-primary-2/80 text-xs uppercase tracking-wide text-primary-11">
+                    <tr>
+                      <th class="px-5 py-3">
+                        <input type="checkbox" class="h-4 w-4 rounded border-primary-7 text-primary-12 focus:ring-primary-7" />
+                      </th>
+                      <th class="px-5 py-3">Key</th>
+                      <th class="px-5 py-3">Value</th>
+                      <th class="px-5 py-3">Created</th>
+                      <th class="px-5 py-3">TTL</th>
+                      <th class="px-5 py-3 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-primary-6">
+                    {keyValueEntries.map((entry) => (
+                      <tr class="transition hover:bg-primary-3/40">
+                        <td class="px-5 py-4">
+                          <input type="checkbox" class="h-4 w-4 rounded border-primary-7 text-primary-12 focus:ring-primary-7" />
+                        </td>
+                        <td class="px-5 py-4 font-mono text-xs text-primary-11">{entry.key}</td>
+                        <td class="px-5 py-4 font-mono text-xs text-primary-12">
+                          {entry.value.length > 34 ? `${entry.value.slice(0, 31)}…` : entry.value}
+                        </td>
+                        <td class="px-5 py-4 text-xs text-primary-11">{entry.createdAt}</td>
+                        <td class="px-5 py-4">
+                          <span
+                            class={`inline-flex items-center rounded-lg border px-2.5 py-0.5 text-xs font-semibold ${
+                              entry.ttl === "No expiry"
+                                ? "border-primary-6 text-primary-11"
+                                : "border-amber-500/60 bg-amber-500/10 text-amber-400"
+                            }`}
+                          >
+                            {entry.ttl}
+                          </span>
+                        </td>
+                        <td class="px-5 py-4 text-right">
+                          <button class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-primary-6 text-primary-11 transition hover:bg-primary-3 hover:text-primary-12">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                              <polyline points="9 18 15 12 9 6" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                            </svg>
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="flex flex-col gap-4 border-t border-primary-6 bg-primary-2/60 px-6 py-4 text-sm text-primary-11 sm:flex-row sm:items-center sm:justify-between">
+                <p>
+                  {paginationSummary.selected} of {paginationSummary.total} row(s) selected.
+                </p>
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
+                  <div class="flex items-center gap-2">
+                    <span>Rows per page</span>
+                    <div class="flex items-center gap-2 rounded-lg border border-primary-6 bg-primary-1 px-3 py-1.5 text-primary-12 shadow-sm">
+                      <span>{paginationSummary.rowsPerPage}</span>
+                      <svg class="h-3.5 w-3.5 text-primary-10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <polyline points="7 10 12 15 17 10" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span>
+                      Page {paginationSummary.page} of {paginationSummary.totalPages}
+                    </span>
+                    <div class="flex items-center gap-2">
+                      <button class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-primary-6 text-primary-11 transition hover:bg-primary-3 hover:text-primary-12" aria-label="First page">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                          <polyline points="13 6 7 12 13 18" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                          <polyline points="17 6 11 12 17 18" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                        </svg>
+                      </button>
+                      <button class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-primary-6 text-primary-11 transition hover:bg-primary-3 hover:text-primary-12" aria-label="Previous page">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                          <polyline points="15 6 9 12 15 18" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                        </svg>
+                      </button>
+                      <button class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-primary-6 text-primary-11 transition hover:bg-primary-3 hover:text-primary-12" aria-label="Next page">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                          <polyline points="9 6 15 12 9 18" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                        </svg>
+                      </button>
+                      <button class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-primary-6 text-primary-11 transition hover:bg-primary-3 hover:text-primary-12" aria-label="Last page">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                          <polyline points="7 6 13 12 7 18" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                          <polyline points="11 6 17 12 11 18" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Modules Detail Section -->
+    <section class="py-24 bg-primary-2 relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-primary-1 via-primary-2 to-primary-1"></div>
+      <div class="relative max-w-7xl mx-auto px-6">
+
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold text-primary-12 mb-4">Available Modules</h2>
+          <p class="text-xl text-primary-11 max-w-3xl mx-auto">
+            Production-ready infrastructure primitives with built-in dashboard management.
+          </p>
+        </div>
 
         <div class="grid lg:grid-cols-2 gap-12 items-start">
           <div class="space-y-6">
@@ -207,88 +675,6 @@ const footerLinks = {
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Pluggable Section -->
-    <section class="py-24 bg-primary-1 relative overflow-hidden">
-      <div class="absolute inset-0 bg-gradient-to-br from-primary-1 via-primary-2 to-primary-1"></div>
-      <div class="absolute bottom-1/4 left-1/3 w-[32rem] h-[32rem] bg-primary-9 rounded-full mix-blend-multiply filter blur-3xl opacity-5"></div>
-      <div class="relative max-w-7xl mx-auto px-6">
-        <!-- Backend Providers -->
-        <div class="mb-20">
-          <div class="grid lg:grid-cols-[1fr_1.2fr] gap-16 items-start">
-            <div class="pt-4">
-              <span class="inline-block text-[0.8125rem] font-semibold text-primary-11 tracking-[0.1em] uppercase mb-4 px-3.5 py-1.5 bg-primary-3 rounded-md">
-                The Engine
-              </span>
-              <h3 class="text-[2rem] font-bold text-primary-12 mb-6 leading-[1.25] tracking-tight">
-                Use the Infrastructure You Already Have.
-              </h3>
-              <p class="text-[1.0625rem] text-primary-11 leading-[1.75] mb-4">
-                Stop spinning up new services. InfraKit's adapters let you run modules on the tools you already own. If you have a Postgres database, you have a production-ready backend for your key-value store.
-              </p>
-              <p class="text-[1.0625rem] text-primary-11 leading-[1.75]">
-                Prototype locally with an <code class="text-sm bg-primary-3 px-2 py-1 rounded">in-memory</code> adapter, then scale to production by changing one line.
-              </p>
-              
-              <div class="grid grid-cols-[repeat(auto-fit,minmax(6rem,1fr))] gap-3 mt-8 p-6 bg-primary-2 rounded-2xl border border-primary-6">
-                {backendProviders.map(provider => (
-                  <div class="flex items-center justify-center px-3.5 py-3.5 bg-primary-1 border border-primary-6 rounded-[0.625rem] text-sm font-semibold text-primary-12 hover:border-primary-7 hover:bg-primary-2 transition-all">
-                    {provider}
-                  </div>
-                ))}
-              </div>
-            </div>
-            
-            <div class="bg-primary-2 border-2 border-primary-6 rounded-[1.25rem] overflow-hidden shadow-[0_4px_6px_rgba(0,0,0,0.03)]">
-              <div class="flex items-center gap-2 px-5 py-4 bg-primary-3 border-b border-primary-6">
-                <div class="w-3 h-3 rounded-full bg-primary-6"></div>
-                <div class="w-3 h-3 rounded-full bg-primary-6"></div>
-                <div class="w-3 h-3 rounded-full bg-primary-6"></div>
-              </div>
-              <div class="p-6 [&_pre]:!bg-transparent [&_pre]:!p-0 [&_pre]:!m-0 [&_code]:text-sm [&_pre]:leading-[1.75]">
-                <Code code={providerCode} lang="ts" theme="github-light" />
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Frontend Integration -->
-        <div>
-          <div class="grid lg:grid-cols-[1.2fr_1fr] gap-16 items-start">
-            <div class="bg-primary-2 border-2 border-primary-6 rounded-[1.25rem] overflow-hidden shadow-[0_4px_6px_rgba(0,0,0,0.03)] lg:order-1">
-              <div class="flex items-center gap-2 px-5 py-4 bg-primary-3 border-b border-primary-6">
-                <div class="w-3 h-3 rounded-full bg-primary-6"></div>
-                <div class="w-3 h-3 rounded-full bg-primary-6"></div>
-                <div class="w-3 h-3 rounded-full bg-primary-6"></div>
-              </div>
-              <div class="p-6 [&_pre]:!bg-transparent [&_pre]:!p-0 [&_pre]:!m-0 [&_code]:text-sm [&_pre]:leading-[1.75]">
-                <Code code={dashboardCode} lang="ts" theme="github-light" />
-              </div>
-            </div>
-            
-            <div class="pt-4 lg:order-2">
-              <span class="inline-block text-[0.8125rem] font-semibold text-primary-11 tracking-[0.1em] uppercase mb-4 px-3.5 py-1.5 bg-primary-3 rounded-md">
-                The Driver's Seat
-              </span>
-              <h3 class="text-[2rem] font-bold text-primary-12 mb-6 leading-[1.25] tracking-tight">
-                A UI That Fits Your Framework.
-              </h3>
-              <p class="text-[1.0625rem] text-primary-11 leading-[1.75]">
-                The dashboard isn't another app to host. It's a simple adapter that mounts into your existing server. Add one line to your Express or Hono app to get a complete admin UI that works with your existing auth and deployment pipeline.
-              </p>
-
-              <div class="grid grid-cols-[repeat(auto-fit,minmax(6rem,1fr))] gap-3 mt-8 p-6 bg-primary-2 rounded-2xl border border-primary-6">
-                {frontendIntegrations.map(integration => (
-                  <div class="flex items-center justify-center px-3.5 py-3.5 bg-primary-1 border border-primary-6 rounded-[0.625rem] text-sm font-semibold text-primary-12 hover:border-primary-7 hover:bg-primary-2 transition-all">
-                    {integration}
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -423,6 +809,132 @@ const footerLinks = {
           headerContent?.classList.remove('scrolled');
         }
       });
+    </script>
+
+    <script>
+    // Get DOM elements
+    const moduleButtons = document.querySelectorAll('.module-btn');
+    const adapterButtons = document.querySelectorAll('.adapter-btn');
+    const dashboardButtons = document.querySelectorAll('.dashboard-adapter-btn');
+
+    const moduleCodeDisplay = document.getElementById('module-code-display');
+    const dashboardCodeDisplay = document.getElementById('dashboard-code-display');
+
+    const defaultModule = moduleCodeDisplay?.dataset.defaultModule ?? 'keyvalue';
+    const defaultAdapter = moduleCodeDisplay?.dataset.defaultAdapter ?? 'memory';
+    const defaultDashboard = dashboardCodeDisplay?.dataset.defaultDashboard ?? 'express';
+
+    // State management
+    let selectedModule = defaultModule;
+    let selectedAdapter = defaultAdapter;
+    let selectedDashboard = defaultDashboard;
+
+    const moduleCodeExamples = document.querySelectorAll('[data-code-example]');
+    const dashboardCodeExamples = document.querySelectorAll('[data-dashboard-code]');
+
+    // Update button states
+    function updateButtonStates(buttons, activeValue, dataAttribute) {
+      buttons.forEach(btn => {
+        const value = btn.getAttribute(dataAttribute);
+        if (value === activeValue) {
+          btn.classList.add('border-primary-9', 'shadow-sm');
+          btn.classList.remove('border-primary-6');
+        } else {
+          btn.classList.remove('border-primary-9', 'shadow-sm');
+          btn.classList.add('border-primary-6');
+        }
+      });
+    }
+
+    // Update module code display
+    function updateModuleCode() {
+      let hasActive = false;
+
+      moduleCodeExamples.forEach(example => {
+        const module = example.getAttribute('data-module');
+        const adapter = example.getAttribute('data-adapter');
+        const isActive = module === selectedModule && adapter === selectedAdapter;
+
+        example.hidden = !isActive;
+        example.setAttribute('aria-hidden', String(!isActive));
+
+        if (isActive) {
+          hasActive = true;
+        }
+      });
+
+      if (moduleCodeDisplay) {
+        moduleCodeDisplay.classList.toggle('hidden', !hasActive);
+      }
+    }
+
+    // Update dashboard code display
+    function updateDashboardCode() {
+      let hasActive = false;
+
+      dashboardCodeExamples.forEach(example => {
+        const framework = example.getAttribute('data-framework');
+        const isActive = framework === selectedDashboard;
+
+        example.hidden = !isActive;
+        example.setAttribute('aria-hidden', String(!isActive));
+
+        if (isActive) {
+          hasActive = true;
+        }
+      });
+
+      if (dashboardCodeDisplay) {
+        dashboardCodeDisplay.classList.toggle('hidden', !hasActive);
+      }
+    }
+
+    // Module button click handlers
+    moduleButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.disabled) return;
+
+        const module = btn.getAttribute('data-module');
+        selectedModule = module;
+
+        updateButtonStates(moduleButtons, module, 'data-module');
+        updateModuleCode();
+      });
+    });
+
+    // Adapter button click handlers
+    adapterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const adapter = btn.getAttribute('data-adapter');
+        selectedAdapter = adapter;
+
+        updateButtonStates(adapterButtons, adapter, 'data-adapter');
+        updateModuleCode();
+      });
+    });
+
+    // Dashboard adapter button click handlers
+    dashboardButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const framework = btn.getAttribute('data-framework');
+        selectedDashboard = framework;
+
+        updateButtonStates(dashboardButtons, framework, 'data-framework');
+        updateDashboardCode();
+      });
+    });
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set initial states
+      updateButtonStates(moduleButtons, selectedModule, 'data-module');
+      updateButtonStates(adapterButtons, selectedAdapter, 'data-adapter');
+      updateButtonStates(dashboardButtons, selectedDashboard, 'data-framework');
+
+      // Show initial code examples
+      updateModuleCode();
+      updateDashboardCode();
+    });
     </script>
   </body>
 </html>

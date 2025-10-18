@@ -1,3 +1,4 @@
+import cloudflare from "@astrojs/cloudflare";
 import mdx from "@astrojs/mdx";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
@@ -6,6 +7,7 @@ import expressiveCode from "astro-expressive-code";
 export default defineConfig({
 	integrations: [
 		expressiveCode({
+			themes: ["github-dark", "github-light"],
 			styleOverrides: {
 				frames: { frameBoxShadowCssValue: "none" },
 				tooltipSuccessBackground: "var(--color-green-3)",
@@ -17,5 +19,6 @@ export default defineConfig({
 	vite: {
 		plugins: [tailwindcss()],
 	},
+	adapter: cloudflare(),
 });
 

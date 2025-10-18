@@ -26,7 +26,6 @@ export class HonoDashboardAdapter {
 			});
 
 			app.get("/api/kv/list", (c) => {
-				console.log("listing");
 				return c.json(
 					this.#infrakit.dashboard.keyValue?.list({
 						paginate: {

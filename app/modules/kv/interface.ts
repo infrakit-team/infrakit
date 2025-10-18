@@ -12,16 +12,6 @@ export type KeyValueOption = {
 	timeToLiveInMs?: number;
 };
 
-export type KeyValueStats = {
-	totalKeys: number;
-	storageUsed: string;
-	hitRate: number;
-	totalKeysChange: number;
-	hitRateChange: number;
-	operationsHistory: number[];
-	labels: string[];
-};
-
 export type KeyValue = KeyValueClient & KeyValueDashboard;
 
 export type KeyValueClient = {
@@ -45,7 +35,6 @@ export type KeyValueDashboard = {
 			count: number;
 		};
 		count(): number;
-		stats(timeRange: string): KeyValueStats;
 		view(input: { key: string }): (KeyValueItem & { key: string }) | undefined;
 		deleteBulk(input: { keys: string[] }): boolean;
 	};
