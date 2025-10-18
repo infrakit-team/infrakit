@@ -146,7 +146,6 @@ export interface ReleaseCommandConfig {
 	tagPrefix: string;
 	displayName: string;
 	packageJsonPaths?: string[];
-	publishDirs?: string[];
 }
 
 const ensureCommands = () => {
@@ -293,31 +292,6 @@ const updatePackageVersions = (
 	}
 };
 
-const publishPackages = async (
-	repoRoot: string,
-	directories: string[],
-	dryRun: boolean,
-) => {
-	for (const relativeDir of directories) {
-		const packageDir = join(repoRoot, relativeDir);
-		const manifestPath = join(packageDir, "package.json");
-		if (!existsSync(manifestPath)) {
-			console.log(`  - Skipping missing package: ${relativeDir}`);
-			continue;
-		}
-
-		if (dryRun) {
-			console.log(
-				`  - [dry-run] npm publish --access public (cwd: ${relativeDir})`,
-			);
-			continue;
-		}
-
-		console.log(`  - Publishing ${relativeDir}`);
-		await $`cd ${packageDir} && npm publish --access public`;
-	}
-};
-
 const createRelease = async (tag: string, notes: string, dryRun: boolean) => {
 	const targetCommit = (await $`git rev-parse HEAD`.text()).trim();
 	console.log(`Creating ${tag} from ${targetCommit}`);
@@ -354,7 +328,6 @@ export const createReleaseCommand = (config: ReleaseCommandConfig) => {
 
 	type ReleaseOptions = TypeOf<typeof releaseOptions>;
 	const packageJsonPaths = config.packageJsonPaths ?? [];
-	const publishDirs = config.publishDirs ?? [];
 
 	return command({
 		name: config.name,
@@ -393,15 +366,6 @@ export const createReleaseCommand = (config: ReleaseCommandConfig) => {
 						: "updating package.json versions",
 					() =>
 						updatePackageVersions(repoRoot, packageJsonPaths, semver, isDryRun),
-				);
-			}
-
-			if (publishDirs.length > 0) {
-				await runStep(
-					isDryRun
-						? "previewing npm publish commands"
-						: "publishing packages to npm",
-					() => publishPackages(repoRoot, publishDirs, isDryRun),
 				);
 			}
 

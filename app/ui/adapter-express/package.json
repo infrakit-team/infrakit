@@ -1,6 +1,6 @@
 {
-	"name": "@infrakit-team/ui-exrpess",
-	"version": "0.1.0",
+	"name": "@infrakit-team/ui-express",
+	"version": "0.1.6",
 	"private": false,
 	"license": "MIT",
 	"files": [
