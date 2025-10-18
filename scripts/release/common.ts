@@ -1,4 +1,10 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+	existsSync,
+	mkdtempSync,
+	readFileSync,
+	rmSync,
+	writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -140,10 +146,11 @@ export interface ReleaseCommandConfig {
 	tagPrefix: string;
 	displayName: string;
 	packageJsonPaths?: string[];
+	publishDirs?: string[];
 }
 
 const ensureCommands = () => {
-	const required = ["git", "bunx", "gh"];
+	const required = ["git", "bunx", "gh", "npm"];
 	const missing = required.filter((cmd) => !Bun.which(cmd));
 
 	if (missing.length) {
@@ -265,15 +272,49 @@ const updatePackageVersions = (
 	repoRoot: string,
 	paths: string[],
 	version: string,
+	dryRun: boolean,
 ) => {
 	for (const relativePath of paths) {
 		const packagePath = join(repoRoot, relativePath);
+		if (!existsSync(packagePath)) {
+			console.log(`  - Skipping missing package.json: ${relativePath}`);
+			continue;
+		}
+		if (dryRun) {
+			console.log(`  - [dry-run] Set ${relativePath} version to ${version}`);
+			continue;
+		}
 		const contents = readFileSync(packagePath, "utf8");
 		const pkg = JSON.parse(contents) as Record<string, unknown>;
 		pkg.version = version;
 		const serialized = JSON.stringify(pkg, null, "\t");
 		writeFileSync(packagePath, `${serialized}\n`, "utf8");
 		console.log(`  - Set ${relativePath} version to ${version}`);
+	}
+};
+
+const publishPackages = async (
+	repoRoot: string,
+	directories: string[],
+	dryRun: boolean,
+) => {
+	for (const relativeDir of directories) {
+		const packageDir = join(repoRoot, relativeDir);
+		const manifestPath = join(packageDir, "package.json");
+		if (!existsSync(manifestPath)) {
+			console.log(`  - Skipping missing package: ${relativeDir}`);
+			continue;
+		}
+
+		if (dryRun) {
+			console.log(
+				`  - [dry-run] npm publish --access public (cwd: ${relativeDir})`,
+			);
+			continue;
+		}
+
+		console.log(`  - Publishing ${relativeDir}`);
+		await $`cd ${packageDir} && npm publish --access public`;
 	}
 };
 
@@ -313,12 +354,14 @@ export const createReleaseCommand = (config: ReleaseCommandConfig) => {
 
 	type ReleaseOptions = TypeOf<typeof releaseOptions>;
 	const packageJsonPaths = config.packageJsonPaths ?? [];
+	const publishDirs = config.publishDirs ?? [];
 
 	return command({
 		name: config.name,
 		desc: config.desc,
 		options: releaseOptions,
 		handler: async (options: ReleaseOptions) => {
+			const isDryRun = options.dryRun ?? false;
 			await runStep("verifying required commands", () => ensureCommands());
 			const repoRoot = await runStep(
 				"locating repository root",
@@ -344,8 +387,21 @@ export const createReleaseCommand = (config: ReleaseCommandConfig) => {
 			);
 
 			if (packageJsonPaths.length > 0) {
-				await runStep("updating package.json versions", () =>
-					updatePackageVersions(repoRoot, packageJsonPaths, semver),
+				await runStep(
+					isDryRun
+						? "previewing package.json version updates"
+						: "updating package.json versions",
+					() =>
+						updatePackageVersions(repoRoot, packageJsonPaths, semver, isDryRun),
+				);
+			}
+
+			if (publishDirs.length > 0) {
+				await runStep(
+					isDryRun
+						? "previewing npm publish commands"
+						: "publishing packages to npm",
+					() => publishPackages(repoRoot, publishDirs, isDryRun),
 				);
 			}
 

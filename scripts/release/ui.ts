@@ -10,4 +10,9 @@ export const uiCommand = createReleaseCommand({
 		"app/ui/adapter-express/package.json",
 		"app/ui/adapter-hono/package.json",
 	],
+	publishDirs: [
+		"app/ui/core",
+		"app/ui/adapter-express",
+		"app/ui/adapter-hono",
+	],
 });
