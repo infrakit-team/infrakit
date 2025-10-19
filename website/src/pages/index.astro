@@ -62,10 +62,6 @@ const comingSoonModules = [
   }
 ];
 
-// Updated backendProviders to reflect current and future state
-const backendProviders = ['Memory', 'Postgres (soon)', 'Redis (soon)', 'MySQL (soon)', 'More...'];
-const frontendIntegrations = ['Express', 'Hono', 'Fastify', 'H3', 'Koa', 'Next.js'];
-
 const codeExamples = {
   module: {
     keyvalue: {
@@ -226,13 +222,9 @@ const footerLinks = {
           <div class="flex w-full items-center justify-between gap-3 sm:w-auto sm:gap-4">
             <div class="flex items-center gap-3">
               <div class="relative">
-                <div class="relative bg-primary-9 p-2 rounded-lg">
-                  <svg class="w-6 h-6 text-primary-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="2 17 12 22 22 17" ></polyline>
-                    <polyline points="2 12 12 17 22 12"></polyline>
-                    <polygon points="12 2 2 7 12 12 22 7 12 2" ></polygon>
-                  </svg>
-                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 1208 1394" fill="#000">
+                  <path d="M603.92 0.130859L0.866699 348.411V1045.62L603.973 1393.85L1207.13 1045.57V348.411L603.92 0.130859ZM394.2 1000.53L233.333 1093.42L72.48 1000.55L72.4853 814.587L233.312 721.712L394.192 814.587L394.2 1000.53ZM394.2 572.024L233.333 664.915L72.48 572.024L72.4853 386.064L233.312 293.204L394.192 386.064L394.2 572.024ZM764.853 1214.56L604 1307.43L443.133 1214.56V1028.61L603.987 935.72L764.853 1028.61V1214.56ZM764.853 786.971L604 879.862L443.133 786.987L443.139 601.027L603.992 508.152L764.859 601.027L764.853 786.971ZM764.853 357.998L604 450.872L443.133 357.998L443.139 172.038L603.992 79.1629L764.859 172.038L764.853 357.998ZM1135.53 1000.52L974.667 1093.41L813.813 1000.53V814.587L974.64 721.696L1135.52 814.587L1135.53 1000.52ZM1135.53 572.011L974.667 664.886L813.813 572.026V386.066L974.64 293.175L1135.52 386.066L1135.53 572.011Z" fill="#000"></path>
+                </svg>
               </div>
               <span class="text-2xl font-bold text-primary-12">InfraKit</span>
             </div>
@@ -270,7 +262,7 @@ const footerLinks = {
               Documentation
             </a>
             <a 
-              href="https://github.com/infrakit" 
+              href="https://github.com/infrakit-team/infrakit" 
               class="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-12 text-primary-1 rounded-lg text-sm font-medium hover:bg-primary-11 transition-all shadow-lg w-full sm:w-auto"
             >
               <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -286,60 +278,23 @@ const footerLinks = {
     <!-- Hero Section -->
     <section class="bg-primary-2 relative overflow-hidden">
       <div class="relative max-w-7xl mx-auto hero-shell">
-        <div class="text-center mb-14 space-y-6">
+        <div class="text-center space-y-6">
           <h1 class="hero-title font-bold text-primary-12 leading-tight max-w-4xl mx-auto">
-            Open-source Infrastructure Primitives
+            Typescript framework for plugging backend
           </h1>
           <p class="hero-subtitle text-primary-11 max-w-3xl mx-auto leading-relaxed">
             An open-source toolkit for common backend infrastructure, with a built-in admin dashboard for TypeScript.
           </p>
         </div>
-
-        <div class="text-center space-y-5">
-          <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-            <a
-              href="/docs/overview/getting-started"
-              class="inline-flex items-center justify-center gap-2 bg-primary-12 text-primary-1 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-primary-11 transition-all shadow-lg"
-            >
-              Get Started
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-              </svg>
-            </a>
-            <a
-              href="/docs/modules/key-value"
-              class="inline-flex items-center justify-center gap-2 bg-primary-3 text-primary-12 px-8 py-4 rounded-xl font-semibold text-lg border border-primary-6 hover:bg-primary-4 hover:border-primary-7 transition-all"
-            >
-              View Modules
-            </a>
-          </div>
-        </div>
       </div>
-    </section>
-
-    <!-- Architecture Diagram Section -->
-    <section class="relative overflow-hidden bg-primary-1 py-16 sm:py-24">
-      <div class="absolute inset-0 bg-gradient-to-br from-primary-2 via-primary-2 to-primary-1"></div>
-      <div class="absolute top-1/4 right-1/3 hidden h-[32rem] w-[32rem] rounded-full bg-primary-9 mix-blend-multiply filter blur-3xl opacity-5 sm:block"></div>
       <div class="relative max-w-7xl mx-auto section-shell">
-        
-        <div class="text-center mb-12 sm:mb-16">
-          <span class="inline-block text-[0.8125rem] font-semibold text-primary-11 tracking-[0.1em] uppercase mb-4 px-3.5 py-1.5 bg-primary-3 rounded-md">
-            Architecture
-          </span>
-          <h2 class="section-title font-bold text-primary-12 mb-4">How It Works</h2>
-          <p class="section-subtitle text-primary-11 max-w-3xl mx-auto">
-            Mix and match modules with adapters, then view everything through one unified dashboard.
-          </p>
-        </div>
-
         <!-- Top Row: Modules + Adapters and Dashboard Adapters -->
         <div class="grid gap-6 mb-12 lg:grid-cols-2 lg:gap-8">
           
           <!-- Left: Modules + Module Adapters -->
           <div class="rounded-2xl border-2 border-primary-6 bg-primary-2 p-6 sm:p-8">
             <h3 class="text-lg font-bold text-primary-12 mb-6 flex items-center gap-2">
-              <span>Modules + Module Adapter</span>
+              <span>Modules</span>
             </h3>
             
             <!-- Modules Row -->
@@ -427,7 +382,7 @@ const footerLinks = {
 
           <!-- Right: Dashboard Adapters -->
           <div class="rounded-2xl border-2 border-primary-6 bg-primary-2 p-6 sm:p-8">
-            <h3 class="text-lg font-bold text-primary-12 mb-6">Dashboard Adapter</h3>
+            <h3 class="text-lg font-bold text-primary-12 mb-6">Dashboard</h3>
             
             <div class="flex flex-wrap justify-center gap-3 mb-6">
               <button class="dashboard-adapter-btn bg-primary-1 border border-primary-9 rounded-lg px-4 py-2.5 text-sm font-semibold text-primary-12 shadow-sm hover:bg-primary-3 transition-all cursor-pointer" data-framework="express">
@@ -642,67 +597,6 @@ const footerLinks = {
       </div>
     </section>
 
-    <!-- Modules Detail Section -->
-    <section class="relative overflow-hidden bg-primary-2 py-16 sm:py-24">
-      <div class="absolute inset-0 bg-gradient-to-br from-primary-1 via-primary-2 to-primary-1"></div>
-      <div class="relative max-w-7xl mx-auto section-shell">
-
-        <div class="text-center mb-12 sm:mb-16">
-          <h2 class="section-title font-bold text-primary-12 mb-4">Available Modules</h2>
-          <p class="section-subtitle text-primary-11 max-w-3xl mx-auto">
-            Production-ready infrastructure primitives with built-in dashboard management.
-          </p>
-        </div>
-
-        <div class="grid items-start gap-8 lg:grid-cols-2 lg:gap-12">
-          <div class="space-y-6">
-            {modules.map(module => (
-              <div class="bg-primary-1 border border-primary-6 rounded-2xl p-6 hover:border-primary-7 transition-all">
-                <div class="flex gap-4">
-                  <div class="flex-shrink-0">
-                    <div class="w-12 h-12 bg-gradient-to-br from-primary-3 to-primary-4 border border-primary-6 rounded-xl flex items-center justify-center">
-                      <svg class="w-6 h-6 text-primary-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={module.icon}/>
-                      </svg>
-                    </div>
-                  </div>
-                  <div class="flex-1">
-                    <h3 class="text-xl font-bold text-primary-12 mb-2">{module.title}</h3>
-                    <p class="text-primary-11 leading-relaxed">{module.description}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div class="lg:sticky lg:top-24 space-y-6">
-            {comingSoonModules.map(module => (
-              <div class="bg-primary-1 border border-primary-6 rounded-2xl p-6 opacity-60 pointer-events-none">
-                <div class="flex gap-4">
-                  <div class="flex-shrink-0">
-                    <div class="w-12 h-12 bg-gradient-to-br from-primary-3 to-primary-4 border border-primary-6 rounded-xl flex items-center justify-center">
-                      <svg class="w-6 h-6 text-primary-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={module.icon}/>
-                      </svg>
-                    </div>
-                  </div>
-                  <div class="flex-1">
-                    <div class="flex items-center gap-3 mb-2">
-                      <h3 class="text-xl font-bold text-primary-12">{module.title}</h3>
-                      <span class="inline-block text-[0.7rem] font-semibold text-primary-11 tracking-wide uppercase px-2 py-0.5 bg-primary-3 rounded-md">
-                        Coming Soon
-                      </span>
-                    </div>
-                    <p class="text-primary-11 leading-relaxed">{module.description}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- CTA Section -->
     <section class="relative overflow-hidden bg-primary-1 py-16 sm:py-24">
       <div class="absolute inset-0 bg-gradient-to-br from-primary-2 via-primary-2 to-primary-1"></div>
@@ -741,16 +635,9 @@ const footerLinks = {
         <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
           <div class="lg:col-span-2">
             <div class="flex items-center gap-3 mb-4">
-              <div class="relative">
-                <div class="absolute inset-0 bg-primary-9/10 rounded-lg blur-md"></div>
-                <div class="relative bg-primary-3 p-2 rounded-lg border border-primary-6">
-                  <svg class="w-6 h-6 text-primary-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polygon points="12 2 2 7 12 12 22 7 12 2" opacity="0.4"></polygon>
-                    <polyline points="2 17 12 22 22 17" opacity="0.7"></polyline>
-                    <polyline points="2 12 12 17 22 12"></polyline>
-                  </svg>
-                </div>
-              </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 1208 1394" fill="#000">
+                  <path d="M603.92 0.130859L0.866699 348.411V1045.62L603.973 1393.85L1207.13 1045.57V348.411L603.92 0.130859ZM394.2 1000.53L233.333 1093.42L72.48 1000.55L72.4853 814.587L233.312 721.712L394.192 814.587L394.2 1000.53ZM394.2 572.024L233.333 664.915L72.48 572.024L72.4853 386.064L233.312 293.204L394.192 386.064L394.2 572.024ZM764.853 1214.56L604 1307.43L443.133 1214.56V1028.61L603.987 935.72L764.853 1028.61V1214.56ZM764.853 786.971L604 879.862L443.133 786.987L443.139 601.027L603.992 508.152L764.859 601.027L764.853 786.971ZM764.853 357.998L604 450.872L443.133 357.998L443.139 172.038L603.992 79.1629L764.859 172.038L764.853 357.998ZM1135.53 1000.52L974.667 1093.41L813.813 1000.53V814.587L974.64 721.696L1135.52 814.587L1135.53 1000.52ZM1135.53 572.011L974.667 664.886L813.813 572.026V386.066L974.64 293.175L1135.52 386.066L1135.53 572.011Z" fill="#000"></path>
+                </svg>
               <span class="text-2xl font-bold text-primary-12">InfraKit</span>
             </div>
             <p class="text-primary-11 mb-6 max-w-sm">
