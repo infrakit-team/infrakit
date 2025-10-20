@@ -1,3 +1,6 @@
 {
-	"name": "@infrakit-team/cli"
+	"name": "@infrakit-team/cli",
+	"export": {
+		".": "./index.ts"
+	}
 }

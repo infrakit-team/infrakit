@@ -1,3 +1,4 @@
 {
-	"name": "@infrakit-team/sdk"
+	"name": "@infrakit-team/sdk",
+	"version": "0.1.0"
 }

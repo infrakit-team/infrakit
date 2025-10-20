@@ -24,6 +24,7 @@
     },
     "app/modules/kv/core": {
       "name": "@infrakit-team/module-kv",
+      "version": "0.1.0",
     },
     "app/modules/kv/test": {
       "name": "@infrakit-team/module-kv-test",
@@ -33,6 +34,7 @@
     },
     "app/sdk": {
       "name": "@infrakit-team/sdk",
+      "version": "0.1.0",
     },
     "app/ui/adapter-express": {
       "name": "@infrakit-team/ui-express",

@@ -1,5 +1,4 @@
 name: Publish UI Packages
-
 on:
   push:
     tags:
@@ -11,60 +10,84 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
+        
       - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          registry-url: https://registry.npmjs.org
-
+        uses: oven-sh/setup-bun@v2
+        
       - name: Install dependencies
         run: bun install
-
-      - name: Set package version from tag
-        run: |
-          TAG_NAME="${GITHUB_REF_NAME}"
-          VERSION="${TAG_NAME#ui-v}"
-          if [ -z "$VERSION" ] || [ "$VERSION" = "$TAG_NAME" ]; then
-            echo "Tag '$TAG_NAME' does not follow the expected 'ui-v*' pattern."
-            exit 1
-          fi
-          export VERSION
-          PACKAGES=(
-            app/ui/core
-            app/ui/adapter-hono
-            app/ui/adapter-express
-          )
-          for pkg in "${PACKAGES[@]}"; do
-            if [ ! -f "$pkg/package.json" ]; then
-              echo "Skipping missing package: $pkg"
-              continue
-            fi
-            echo "Setting version for $pkg"
-            PACKAGE_PATH="$pkg/package.json" node -e 'const fs = require("fs"); const path = process.env.PACKAGE_PATH; const version = process.env.VERSION; const pkg = JSON.parse(fs.readFileSync(path, "utf8")); pkg.version = version; fs.writeFileSync(path, JSON.stringify(pkg, null, "\t") + "\n");'
-          done
-
-      - name: Build package
-        working-directory: app/ui/core
-        run: npm run build
-
-      - name: Publish packages to npm
+        
+      - name: Set package versions, build, and publish
+        uses: actions/github-script@v8
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          set -euo pipefail
-          PACKAGES=(
-            app/ui/core
-            app/ui/adapter-hono
-            app/ui/adapter-express
-          )
-          for pkg in "${PACKAGES[@]}"; do
-            if [ ! -f "$pkg/package.json" ]; then
-              continue
-            fi
-            echo "Publishing $pkg"
-            (cd "$pkg" && npm publish --access public)
-          done
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            // Extract version from tag
+            const tagName = context.ref.replace('refs/tags/', '');
+            const version = tagName.replace('ui-v', '');
+            
+            if (!version || version === tagName) {
+              core.setFailed(`Tag '${tagName}' does not follow the expected 'ui-v*' pattern.`);
+              return;
+            }
+            
+            core.info(`Publishing version: ${version}`);
+            
+            const packages = [
+              'app/ui/core',
+              'app/ui/adapter-hono',
+              'app/ui/adapter-express'
+            ];
+            
+            // Update package versions
+            for (const pkg of packages) {
+              const pkgPath = path.join(process.cwd(), pkg, 'package.json');
+              
+              if (!fs.existsSync(pkgPath)) {
+                core.warning(`Skipping missing package: ${pkg}`);
+                continue;
+              }
+              
+              core.info(`Setting version for ${pkg}`);
+              const pkgJson = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+              pkgJson.version = version;
+              fs.writeFileSync(pkgPath, JSON.stringify(pkgJson, null, '\t') + '\n');
+            }
+            
+            // Build all packages
+            for (const pkg of packages) {
+              const pkgPath = path.join(process.cwd(), pkg, 'package.json');
+              
+              if (!fs.existsSync(pkgPath)) {
+                continue;
+              }
+              
+              // Check if package has a build script
+              const pkgJson = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+              if (pkgJson.scripts && pkgJson.scripts.build) {
+                core.info(`Building ${pkg}`);
+                await exec.exec('bun', ['run', 'build'], {
+                  cwd: pkg
+                });
+              } else {
+                core.info(`Skipping build for ${pkg} (no build script)`);
+              }
+            }
+            
+            // Publish packages
+            for (const pkg of packages) {
+              const pkgPath = path.join(process.cwd(), pkg, 'package.json');
+              
+              if (!fs.existsSync(pkgPath)) {
+                continue;
+              }
+              
+              core.info(`Publishing ${pkg}`);
+              await exec.exec('bun', ['publish', '--access', 'public'], {
+                cwd: pkg
+              });
+            }
