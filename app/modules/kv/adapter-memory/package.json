@@ -17,7 +17,6 @@
 		".": "./index.ts"
 	},
 	"dependencies": {
-		"@infrakit-team/module-kv": "workspace:*",
-		"@infrakit-team/module-kv-test": "workspace:*"
+		"@infrakit-team/module-kv": "workspace:*"
 	}
 }
