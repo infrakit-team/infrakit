@@ -292,6 +292,16 @@ const updatePackageVersions = (
 	}
 };
 
+const updateBunLockfile = async (dryRun: boolean) => {
+	if (dryRun) {
+		console.log("[dry-run] bun update");
+		return;
+	}
+
+	await $`bun update`;
+	console.log("Updated bun.lockb");
+};
+
 const commitAndPushVersionBump = async (
 	tag: string,
 	packagePaths: string[],
@@ -306,6 +316,7 @@ const commitAndPushVersionBump = async (
 
 	if (dryRun) {
 		console.log(`[dry-run] git add ${packagePaths.join(" ")}`);
+		console.log("[dry-run] git add bun.lockb");
 		console.log(`[dry-run] git commit -m "${commitMessage}"`);
 		console.log("[dry-run] git push");
 		return;
@@ -315,6 +326,9 @@ const commitAndPushVersionBump = async (
 	for (const path of packagePaths) {
 		await $`git add ${path}`;
 	}
+
+	// Stage the bun lockfile
+	await $`git add bun.lockb`;
 
 	// Create the commit
 	await $`git commit -m ${commitMessage}`;
@@ -399,6 +413,11 @@ export const createReleaseCommand = (config: ReleaseCommandConfig) => {
 						: "updating package.json versions",
 					() =>
 						updatePackageVersions(repoRoot, packageJsonPaths, semver, isDryRun),
+				);
+
+				await runStep(
+					isDryRun ? "previewing bun lockfile update" : "updating bun lockfile",
+					() => updateBunLockfile(isDryRun),
 				);
 
 				await runStep(
