@@ -5,5 +5,8 @@ export const kvCommand = createReleaseCommand({
 	desc: "Create a GitHub release for the KV modules",
 	tagPrefix: "kv",
 	displayName: "KV",
-	packageJsonPaths: ["app/modules/kv/adapter-memory/package.json"],
+	packageJsonPaths: [
+		"app/modules/kv/adapter-memory/package.json",
+		"app/modules/kv/core/package.json",
+	],
 });
