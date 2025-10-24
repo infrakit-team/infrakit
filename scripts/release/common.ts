@@ -328,7 +328,7 @@ const commitAndPushVersionBump = async (
 	}
 
 	// Stage the bun lockfile
-	await $`git add bun.lockb`;
+	await $`git add bun.lock`;
 
 	// Create the commit
 	await $`git commit -m ${commitMessage}`;
