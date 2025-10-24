@@ -44,6 +44,7 @@ jobs:
             core.info(`Publishing KV packages version: ${version}`);
             
             const packages = [
+              'app/modules/kv/core',
               'app/modules/kv/adapter-memory'
             ];
             
