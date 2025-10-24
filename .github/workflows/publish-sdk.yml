@@ -26,7 +26,7 @@ jobs:
       - name: Set package version and publish
         uses: actions/github-script@v8
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
         with:
           script: |
             const fs = require('fs');
@@ -61,6 +61,6 @@ jobs:
             
             // Publish to npm
             core.info('Publishing to npm');
-            await exec.exec('npm', ['publish', '--access', 'public'], {
+            await exec.exec('bun', ['publish', '--access', 'public'], {
               cwd: 'app/sdk'
             });
