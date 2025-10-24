@@ -292,6 +292,39 @@ const updatePackageVersions = (
 	}
 };
 
+const commitAndPushVersionBump = async (
+	tag: string,
+	packagePaths: string[],
+	dryRun: boolean,
+) => {
+	if (packagePaths.length === 0) {
+		console.log("No package.json files to commit.");
+		return;
+	}
+
+	const commitMessage = `chore: bump version to ${tag}`;
+
+	if (dryRun) {
+		console.log(`[dry-run] git add ${packagePaths.join(" ")}`);
+		console.log(`[dry-run] git commit -m "${commitMessage}"`);
+		console.log("[dry-run] git push");
+		return;
+	}
+
+	// Stage the updated package.json files
+	for (const path of packagePaths) {
+		await $`git add ${path}`;
+	}
+
+	// Create the commit
+	await $`git commit -m ${commitMessage}`;
+	console.log(`Committed version bump: ${commitMessage}`);
+
+	// Push to remote
+	await $`git push`;
+	console.log("Pushed version bump commit to remote.");
+};
+
 const createRelease = async (tag: string, notes: string, dryRun: boolean) => {
 	const targetCommit = (await $`git rev-parse HEAD`.text()).trim();
 	console.log(`Creating ${tag} from ${targetCommit}`);
@@ -366,6 +399,13 @@ export const createReleaseCommand = (config: ReleaseCommandConfig) => {
 						: "updating package.json versions",
 					() =>
 						updatePackageVersions(repoRoot, packageJsonPaths, semver, isDryRun),
+				);
+
+				await runStep(
+					isDryRun
+						? "previewing version bump commit and push"
+						: "committing and pushing version bump",
+					() => commitAndPushVersionBump(tag, packageJsonPaths, isDryRun),
 				);
 			}
 
