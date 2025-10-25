@@ -1,6 +1,6 @@
 {
 	"name": "@infrakit-team/module-kv-memory",
-	"version": "0.1.9",
+	"version": "0.1.10",
 	"private": false,
 	"license": "MIT",
 	"files": [

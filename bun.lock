@@ -16,14 +16,14 @@
     },
     "app/modules/kv/adapter-memory": {
       "name": "@infrakit-team/module-kv-memory",
-      "version": "0.1.9",
+      "version": "0.1.10",
       "dependencies": {
         "@infrakit-team/module-kv": "workspace:*",
       },
     },
     "app/modules/kv/core": {
       "name": "@infrakit-team/module-kv",
-      "version": "0.1.9",
+      "version": "0.1.10",
     },
     "app/modules/kv/test": {
       "name": "@infrakit-team/module-kv-test",
