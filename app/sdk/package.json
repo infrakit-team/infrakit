@@ -26,5 +26,8 @@
 		"build:js": "bun build index.ts --outdir ./dist --target=node",
 		"build:types": "bunx tsc --project tsconfig.build.json",
 		"prepublishOnly": "bun run build"
+	},
+	"dependencies": {
+		"@infrakit-team/module-kv": "workspace:*"
 	}
 }

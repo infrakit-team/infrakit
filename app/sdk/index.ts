@@ -1,4 +1,4 @@
-import type { KeyValue, KeyValueClient } from "@infrakit-team/modules/kv";
+import type { KeyValue, KeyValueClient } from "@infrakit-team/module";
 
 type InfraKitConfig = {
 	keyValue?: KeyValue;
