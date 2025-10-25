@@ -14,7 +14,7 @@
 		"prepublishOnly": "bun run build"
 	},
 	"exports": {
-		".": "./index.ts"
+		".": "./dist/index.js"
 	},
 	"dependencies": {
 		"@infrakit-team/module-kv": "workspace:*"
