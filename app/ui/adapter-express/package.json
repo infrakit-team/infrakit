@@ -3,17 +3,28 @@
 	"version": "0.1.8",
 	"private": false,
 	"license": "MIT",
+	"type": "module",
 	"files": [
 		"dist"
 	],
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"exports": {
-		".": "./dist/index.js"
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"default": "./dist/index.js"
+		},
+		"./package.json": "./package.json"
 	},
 	"publishConfig": {
 		"access": "public"
 	},
 	"scripts": {
-		"build": "bun build index.ts --outdir ./dist",
+		"build": "bun run build:js && bun run build:types",
+		"build:js": "bun build index.ts --outdir ./dist --target=node",
+		"build:types": "bunx tsc --project tsconfig.build.json",
 		"prepublishOnly": "bun run build"
 	},
 	"dependencies": {

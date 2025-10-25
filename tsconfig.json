@@ -17,9 +17,11 @@
     "baseUrl": ".",
     "paths": {
       "@infrakit-team/module-kv-memory": ["./app/modules/kv/adapter-memory"],
-      "@infrakit-team/ui-hono": ["./app/ui/adapter-hono"],
+      "@infrakit-team/module-kv-test": ["./app/modules/kv/test"],
+      "@infrakit-team/module-kv": ["./app/modules/kv/core"],
+      "@infrakit-team/sdk": ["./app/sdk"],
       "@infrakit-team/ui-express": ["./app/ui/adapter-express"],
-      "@infrakit-team/sdk": ["./app/sdk"]
+      "@infrakit-team/ui-hono": ["./app/ui/adapter-hono"]
     }
   }
 }
