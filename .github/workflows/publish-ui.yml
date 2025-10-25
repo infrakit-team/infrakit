@@ -37,14 +37,20 @@ jobs:
             
             core.info(`Publishing version: ${version}`);
             
-            const packages = [
+            const dependencyPackages = [
+              'app/modules/kv/core',
+              'app/modules/kv/adapter-memory',
+              'app/sdk'
+            ];
+            
+            const uiPackages = [
               'app/ui/core',
               'app/ui/adapter-hono',
               'app/ui/adapter-express'
             ];
             
             // Update package versions
-            for (const pkg of packages) {
+            for (const pkg of uiPackages) {
               const pkgPath = path.join(process.cwd(), pkg, 'package.json');
               
               if (!fs.existsSync(pkgPath)) {
@@ -59,7 +65,8 @@ jobs:
             }
             
             // Build all packages
-            for (const pkg of packages) {
+            const buildOrder = [...dependencyPackages, ...uiPackages];
+            for (const pkg of buildOrder) {
               const pkgPath = path.join(process.cwd(), pkg, 'package.json');
               
               if (!fs.existsSync(pkgPath)) {
@@ -79,7 +86,7 @@ jobs:
             }
             
             // Publish packages
-            for (const pkg of packages) {
+            for (const pkg of uiPackages) {
               const pkgPath = path.join(process.cwd(), pkg, 'package.json');
               
               if (!fs.existsSync(pkgPath)) {
