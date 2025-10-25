@@ -6,7 +6,6 @@
 		"emitDeclarationOnly": true,
 		"declarationDir": "./dist",
 		"outDir": "./dist",
-		"rootDir": ".",
 		"noUncheckedIndexedAccess": false
 	},
 	"include": ["./index.ts"]

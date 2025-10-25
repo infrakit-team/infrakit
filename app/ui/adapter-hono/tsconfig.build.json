@@ -5,8 +5,7 @@
 		"declaration": true,
 		"emitDeclarationOnly": true,
 		"declarationDir": "./dist",
-		"outDir": "./dist",
-		"rootDir": "."
+		"outDir": "./dist"
 	},
 	"include": ["./index.ts"]
 }
