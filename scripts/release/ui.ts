@@ -1,6 +1,6 @@
-import { createReleaseCommand } from "./common";
+import { createReleaseCommand, type ReleaseCommandConfig } from "./common";
 
-export const uiCommand = createReleaseCommand({
+export const uiReleaseConfig: ReleaseCommandConfig = {
 	name: "ui",
 	desc: "Create a GitHub release for the UI package",
 	tagPrefix: "ui",
@@ -10,4 +10,6 @@ export const uiCommand = createReleaseCommand({
 		"app/ui/adapter-express/package.json",
 		"app/ui/adapter-hono/package.json",
 	],
-});
+};
+
+export const uiCommand = createReleaseCommand(uiReleaseConfig);
