@@ -6,15 +6,15 @@
 	"files": [
 		"dist"
 	],
+	"exports": {
+		".": "./dist/index.js"
+	},
 	"publishConfig": {
 		"access": "public"
 	},
 	"scripts": {
 		"build": "bun build index.ts --outdir ./dist",
 		"prepublishOnly": "bun run build"
-	},
-	"exports": {
-		".": "./index.ts"
 	},
 	"dependencies": {
 		"@infrakit-team/sdk": "workspace:*",

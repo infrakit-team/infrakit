@@ -1,4 +1,19 @@
 {
 	"name": "@infrakit-team/sdk",
-	"version": "0.1.0"
+	"version": "0.1.0",
+	"private": false,
+	"license": "MIT",
+	"files": [
+		"dist"
+	],
+	"exports": {
+		".": "./dist/index.js"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"build": "bun build index.ts --outdir ./dist",
+		"prepublishOnly": "bun run build"
+	}
 }
