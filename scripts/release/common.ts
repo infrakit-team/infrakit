@@ -7,6 +7,8 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { createInterface } from "node:readline/promises";
+import { stdin as input, stdout as output } from "node:process";
 import {
 	boolean,
 	command,
@@ -166,6 +168,47 @@ const ensureRepoRoot = async () => {
 	return repoRoot;
 };
 
+const collectPackageVersions = (repoRoot: string, paths: string[]) => {
+	const versions: string[] = [];
+
+	for (const relativePath of paths) {
+		const packagePath = join(repoRoot, relativePath);
+		if (!existsSync(packagePath)) {
+			continue;
+		}
+
+		try {
+			const contents = readFileSync(packagePath, "utf8");
+			const pkg = JSON.parse(contents) as { version?: unknown };
+			if (typeof pkg.version === "string" && pkg.version.trim().length > 0) {
+				versions.push(pkg.version.trim());
+			}
+		} catch (error) {
+			console.warn(`Unable to read version from ${relativePath}: ${String(error)}`);
+		}
+	}
+
+	return versions;
+};
+
+const promptForInput = async (message: string) => {
+	const rl = createInterface({ input, output });
+	try {
+		const response = await rl.question(message);
+		return response.trim();
+	} finally {
+		rl.close();
+	}
+};
+
+const ensureInteractiveMode = () => {
+	if (!input.isTTY || !output.isTTY) {
+		throw new Error(
+			"Version argument is required when running non-interactively. Rerun the command with a version (e.g. 0.1.3).",
+		);
+	}
+};
+
 const normalizeTag = (prefix: string, input: string) => {
 	const expected = `${prefix}-v`;
 	if (input.startsWith(expected)) return input;
@@ -214,6 +257,16 @@ const findPreviousTag = async (prefix: string, currentTag: string) => {
 		.map((line) => line.trim())
 		.filter(Boolean)
 		.find((tag) => tag !== currentTag);
+};
+
+const findLatestTag = async (prefix: string) => {
+	const tagList =
+		(await $`git tag --list "${prefix}-v*" --sort=-version:refname`.text()) as string;
+
+	return tagList
+		.split(/\r?\n/)
+		.map((line) => line.trim())
+		.filter(Boolean)[0];
 };
 
 const generateNotes = async (
@@ -389,10 +442,52 @@ export const createReleaseCommand = (config: ReleaseCommandConfig) => {
 			);
 			console.log(`Repository root: ${repoRoot}`);
 
-			const tag = await runStep("validating version input", () => {
-				const normalized = normalizeTag(config.tagPrefix, options.version);
-				validateVersion(config.tagPrefix, normalized);
-				return normalized;
+			const tag = await runStep("resolving target version", async () => {
+				const provided = options.version?.trim();
+				const finalize = (value: string) => {
+					const normalized = normalizeTag(config.tagPrefix, value);
+					validateVersion(config.tagPrefix, normalized);
+					return normalized;
+				};
+
+				if (provided && provided.length > 0) {
+					return finalize(provided);
+				}
+
+				ensureInteractiveMode();
+
+				const latestTag = await findLatestTag(config.tagPrefix);
+				const latestTagVersion = latestTag
+					? extractVersion(config.tagPrefix, latestTag)
+					: undefined;
+
+				if (latestTag) {
+					console.log(`Latest ${config.displayName} tag: ${latestTag}`);
+				} else {
+					console.log(`No previous ${config.displayName} tag detected.`);
+				}
+
+				const packageVersions = collectPackageVersions(repoRoot, packageJsonPaths);
+				const uniquePackageVersions = Array.from(new Set(packageVersions));
+
+				if (uniquePackageVersions.length > 0) {
+					console.log(
+						`Detected package.json version(s): ${uniquePackageVersions.join(", ")}`,
+					);
+				}
+
+				const suggestion = latestTagVersion ?? uniquePackageVersions[0];
+				const promptMessage = suggestion
+					? `Enter next version [default: ${suggestion}]: `
+					: "Enter next version: ";
+				const answer = await promptForInput(promptMessage);
+				const selectedVersion = answer || suggestion;
+
+				if (!selectedVersion) {
+					throw new Error("A version is required to continue.");
+				}
+
+				return finalize(selectedVersion);
 			});
 			console.log(`Normalized tag: ${tag}`);
 			const semver = extractVersion(config.tagPrefix, tag);
