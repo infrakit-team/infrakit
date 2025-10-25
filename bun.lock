@@ -37,7 +37,7 @@
     },
     "app/ui/adapter-express": {
       "name": "@infrakit-team/ui-express",
-      "version": "0.1.7",
+      "version": "0.1.8",
       "dependencies": {
         "@infrakit-team/sdk": "workspace:*",
         "@types/express": "^5.0.3",
@@ -46,7 +46,7 @@
     },
     "app/ui/adapter-hono": {
       "name": "@infrakit-team/ui-hono",
-      "version": "0.1.7",
+      "version": "0.1.8",
       "dependencies": {
         "@infrakit-team/sdk": "workspace:*",
         "hono": "^4.9.9",
@@ -54,7 +54,7 @@
     },
     "app/ui/core": {
       "name": "@infrakit-team/ui",
-      "version": "0.1.7",
+      "version": "0.1.8",
       "dependencies": {
         "@kobalte/core": "^0.13.11",
         "@solid-primitives/scheduled": "^1.5.2",
