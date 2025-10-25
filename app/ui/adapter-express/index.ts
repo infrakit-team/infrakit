@@ -23,11 +23,6 @@ export class ExpressDashboardAdapter {
 		};
 
 		if (enabledModules.keyValue) {
-			router.get("/api/kv/stats", (req: Request, res: Response) => {
-				const timeRange = (req.query.timeRange as string) || "1h";
-				return res.json(this.#infrakit.dashboard.keyValue?.stats(timeRange));
-			});
-
 			router.get("/api/kv/list", (req: Request, res: Response) => {
 				return res.json(
 					this.#infrakit.dashboard.keyValue?.list({

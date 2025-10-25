@@ -20,11 +20,6 @@ export class HonoDashboardAdapter {
 		};
 
 		if (enabledModules.keyValue && this.#infrakit.keyValue) {
-			app.get("/api/kv/stats", (c) => {
-				const timeRange = c.req.query("timeRange") || "1h";
-				return c.json(this.#infrakit.dashboard.keyValue?.stats(timeRange));
-			});
-
 			app.get("/api/kv/list", (c) => {
 				return c.json(
 					this.#infrakit.dashboard.keyValue?.list({

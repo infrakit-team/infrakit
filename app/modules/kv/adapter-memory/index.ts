@@ -2,7 +2,7 @@ import type {
 	KeyValue,
 	KeyValueItem,
 	KeyValueOption,
-} from "@infrakit-team/modules/kv";
+} from "@infrakit-team/module-kv";
 
 export class KeyValueMemoryAdapter implements KeyValue {
 	private readonly map = new Map<string, KeyValueItem>();
