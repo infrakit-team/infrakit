@@ -43,13 +43,14 @@ jobs:
             
             core.info(`Publishing KV packages version: ${version}`);
             
-            const packages = [
+            const dependencyPackages = [];
+            const releasePackages = [
               'app/modules/kv/core',
               'app/modules/kv/adapter-memory'
             ];
             
             // Update package versions
-            for (const pkg of packages) {
+            for (const pkg of releasePackages) {
               const pkgPath = path.join(process.cwd(), pkg, 'package.json');
               
               if (!fs.existsSync(pkgPath)) {
@@ -64,7 +65,8 @@ jobs:
             }
             
             // Build all packages
-            for (const pkg of packages) {
+            const buildOrder = [...dependencyPackages, ...releasePackages];
+            for (const pkg of buildOrder) {
               const pkgPath = path.join(process.cwd(), pkg, 'package.json');
               
               if (!fs.existsSync(pkgPath)) {
@@ -84,7 +86,7 @@ jobs:
             }
             
             // Publish packages
-            for (const pkg of packages) {
+            for (const pkg of releasePackages) {
               const pkgPath = path.join(process.cwd(), pkg, 'package.json');
               
               if (!fs.existsSync(pkgPath)) {

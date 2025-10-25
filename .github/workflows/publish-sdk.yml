@@ -43,7 +43,12 @@ jobs:
             
             core.info(`Publishing SDK version: ${version}`);
             
-            const pkgPath = path.join(process.cwd(), 'app/sdk/package.json');
+            const dependencyPackages = [
+              'app/modules/kv/core'
+            ];
+            
+            const sdkPackage = 'app/sdk';
+            const pkgPath = path.join(process.cwd(), sdkPackage, 'package.json');
             
             // Update package version
             core.info('Setting package version');
@@ -51,16 +56,28 @@ jobs:
             pkgJson.version = version;
             fs.writeFileSync(pkgPath, JSON.stringify(pkgJson, null, '\t') + '\n');
             
+            const buildOrder = [...dependencyPackages, sdkPackage];
             // Build if build script exists
-            if (pkgJson.scripts && pkgJson.scripts.build) {
-              core.info('Building package');
-              await exec.exec('bun', ['run', 'build'], {
-                cwd: 'app/sdk'
-              });
+            for (const pkg of buildOrder) {
+              const buildPkgPath = path.join(process.cwd(), pkg, 'package.json');
+              
+              if (!fs.existsSync(buildPkgPath)) {
+                continue;
+              }
+              
+              const buildPkgJson = JSON.parse(fs.readFileSync(buildPkgPath, 'utf8'));
+              if (buildPkgJson.scripts && buildPkgJson.scripts.build) {
+                core.info(`Building ${pkg}`);
+                await exec.exec('bun', ['run', 'build'], {
+                  cwd: pkg
+                });
+              } else {
+                core.info(`Skipping build for ${pkg} (no build script)`);
+              }
             }
             
             // Publish to npm
             core.info('Publishing to npm');
             await exec.exec('bun', ['publish', '--access', 'public'], {
-              cwd: 'app/sdk'
+              cwd: sdkPackage
             });
