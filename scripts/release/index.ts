@@ -4,6 +4,7 @@ import { run } from "@drizzle-team/brocli";
 import { uiCommand } from "./ui";
 import { sdkCommand } from "./sdk";
 import { moduleCommand } from "./modules";
+import { cliCommand } from "./cli";
 import { versionsCommand } from "./versions";
 
 $.throws(true);
@@ -28,10 +29,13 @@ const logError = (error: unknown) => {
 
 async function main() {
 	try {
-		await run([uiCommand, sdkCommand, moduleCommand, versionsCommand], {
-			name: "bun run scripts/release/index.ts",
-			description: "Infrakit release helpers",
-		});
+		await run(
+			[uiCommand, sdkCommand, moduleCommand, cliCommand, versionsCommand],
+			{
+				name: "bun run scripts/release/index.ts",
+				description: "Infrakit release helpers",
+			},
+		);
 	} catch (error) {
 		logError(error);
 		process.exit(1);

@@ -1,6 +1,37 @@
 {
 	"name": "@infrakit-team/cli",
+	"version": "0.1.0",
+	"license": "MIT",
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"build": "bun run build:js && bun run build:types",
+		"build:js": "bun build index.ts --outdir ./dist --target=node",
+		"build:types": "bunx tsc --project tsconfig.build.json",
+		"prepublishOnly": "bun run build"
+	},
 	"exports": {
-		".": "./index.ts"
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"default": "./dist/index.js"
+		},
+		"./package.json": "./package.json"
+	},
+	"dependencies": {
+		"consola": "^3.4.2",
+		"kysely": "^0.28.8",
+		"pg": "^8.16.3"
+	},
+	"devDependencies": {
+		"@types/pg": "^8.15.6"
 	}
 }

@@ -1,25 +1,12 @@
-import { boolean, command, run, string } from "@drizzle-team/brocli";
-
-const migrate = command({
-	name: "migrate",
-	options: {
-		module: string().enum("key-value"),
-		dialect: string().enum("postgresql", "mysql", "sqlite"),
-	},
-	handler: (opts) => {
-		console.log({ opts });
-	},
-});
+import { command, run } from "@drizzle-team/brocli";
+import { keyValue } from "./modules/key-value";
 
 const generate = command({
-	name: "generate",
-	options: {
-		module: string().enum("key-value"),
-		dialect: string().enum("postgresql", "mysql", "sqlite"),
-	},
-	handler: (opts) => {
-		console.log({ opts });
-	},
+	name: "create",
+	subcommands: [keyValue],
 });
 
-run([migrate, generate]);
+run([generate], {
+	description: "CLI to help setup infrakit",
+	version: "0.1.0",
+});

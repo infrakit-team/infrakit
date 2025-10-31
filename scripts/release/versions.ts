@@ -1,9 +1,10 @@
 import { readFileSync } from "node:fs";
 import { command } from "@drizzle-team/brocli";
 import type { ReleaseCommandConfig } from "./common";
-import { uiReleaseConfig } from "./ui";
 import { sdkReleaseConfig } from "./sdk";
 import { kvReleaseConfig } from "./modules/kv";
+import { uiReleaseConfig } from "./ui";
+import { cliReleaseConfig } from "./cli";
 
 type ReleaseGroup = {
 	config: ReleaseCommandConfig;
@@ -13,6 +14,7 @@ const releaseGroups: ReleaseGroup[] = [
 	{ config: uiReleaseConfig },
 	{ config: sdkReleaseConfig },
 	{ config: kvReleaseConfig },
+	{ config: cliReleaseConfig },
 ];
 
 type PackageVersion = {
