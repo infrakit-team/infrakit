@@ -1,0 +1,75 @@
+name: Publish CLI Package
+on:
+  push:
+    tags:
+      - cli-v*
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Set package version, build, and publish
+        uses: actions/github-script@v8
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            // Extract version from tag
+            const tagName = context.ref.replace('refs/tags/', '');
+            const version = tagName.replace('cli-v', '');
+
+            if (!version || version === tagName) {
+              core.setFailed(`Tag '${tagName}' does not follow the expected 'cli-v*' pattern.`);
+              return;
+            }
+
+            core.info(`Publishing CLI version: ${version}`);
+
+            const cliPackage = 'app/cli';
+            const pkgPath = path.join(process.cwd(), cliPackage, 'package.json');
+
+            if (!fs.existsSync(pkgPath)) {
+              core.setFailed(`CLI package not found at ${pkgPath}`);
+              return;
+            }
+
+            // Update package version
+            core.info('Setting package version');
+            const pkgJson = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+            pkgJson.version = version;
+            fs.writeFileSync(pkgPath, JSON.stringify(pkgJson, null, '\t') + '\n');
+
+            // Build package if script exists
+            const buildPkgJson = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+            if (buildPkgJson.scripts && buildPkgJson.scripts.build) {
+              core.info('Building CLI package');
+              await exec.exec('bun', ['run', 'build'], {
+                cwd: cliPackage
+              });
+            } else {
+              core.info('Skipping build (no build script)');
+            }
+
+            // Publish to npm
+            core.info('Publishing CLI package');
+            await exec.exec('bun', ['publish', '--access', 'public'], {
+              cwd: cliPackage
+            });
