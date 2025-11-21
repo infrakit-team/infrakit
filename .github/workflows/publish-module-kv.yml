@@ -46,7 +46,7 @@ jobs:
             const dependencyPackages = [];
             const releasePackages = [
               'app/modules/kv/core',
-              'app/modules/kv/adapter-memory'
+              'app/modules/kv/adapter-memory',
               'app/modules/kv/adapter-postgres'
             ];
             
