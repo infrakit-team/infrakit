@@ -30,14 +30,14 @@
     },
     "app/modules/kv/adapter-memory": {
       "name": "@infrakit-team/module-kv-memory",
-      "version": "0.1.14",
+      "version": "0.1.15",
       "dependencies": {
         "@infrakit-team/module-kv": "workspace:*",
       },
     },
     "app/modules/kv/adapter-postgres": {
       "name": "@infrakit-team/module-kv-postgres",
-      "version": "0.1.14",
+      "version": "0.1.15",
       "dependencies": {
         "@electric-sql/pglite": "^0.3.11",
         "@electric-sql/pglite-socket": "^0.0.16",
@@ -52,7 +52,7 @@
     },
     "app/modules/kv/core": {
       "name": "@infrakit-team/module-kv",
-      "version": "0.1.14",
+      "version": "0.1.15",
     },
     "app/modules/kv/test": {
       "name": "@infrakit-team/module-kv-test",
