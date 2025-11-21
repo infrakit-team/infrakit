@@ -14,7 +14,7 @@ const expressAdapter = new ExpressDashboardAdapter({
 });
 
 for (const item of getData()) {
-	infrakit.keyValue.set(item);
+	await infrakit.keyValue.set(item);
 }
 
 const app = express();

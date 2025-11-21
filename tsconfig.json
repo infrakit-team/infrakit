@@ -17,6 +17,7 @@
     "baseUrl": ".",
     "paths": {
       "@infrakit-team/module-kv-memory": ["./app/modules/kv/adapter-memory"],
+      "@infrakit-team/module-kv-postgres": ["./app/modules/kv/adapter-postgres"],
       "@infrakit-team/module-kv-test": ["./app/modules/kv/test"],
       "@infrakit-team/module-kv": ["./app/modules/kv/core"],
       "@infrakit-team/sdk": ["./app/sdk"],

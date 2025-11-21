@@ -7,11 +7,11 @@ import type {
 export class KeyValueMemoryAdapter implements KeyValue {
 	private readonly map = new Map<string, KeyValueItem>();
 
-	del(input: { key: string }): boolean {
+	async del(input: { key: string }): Promise<boolean> {
 		return this.map.delete(input.key);
 	}
 
-	get(input: { key: string }): string | undefined {
+	async get(input: { key: string }): Promise<string | undefined> {
 		const item = this.map.get(input.key);
 
 		if (!item) {
@@ -30,7 +30,11 @@ export class KeyValueMemoryAdapter implements KeyValue {
 		return item.value;
 	}
 
-	set(input: { key: string; value: string; option?: KeyValueOption }): boolean {
+	async set(input: {
+		key: string;
+		value: string;
+		option?: KeyValueOption;
+	}): Promise<boolean> {
 		try {
 			this.map.set(input.key, {
 				value: input.value,
@@ -45,10 +49,10 @@ export class KeyValueMemoryAdapter implements KeyValue {
 		}
 	}
 
-	dashboard = {
-		count: () => this.map.size,
+	_dashboard = {
+		count: async () => this.map.size,
 
-		list: (input: {
+		list: async (input: {
 			filter?: { key?: string };
 			sort?: {
 				key?: "asc" | "desc";
@@ -56,7 +60,10 @@ export class KeyValueMemoryAdapter implements KeyValue {
 				created?: "asc" | "desc";
 			};
 			paginate: { pageSize: number; pageIndex: number };
-		}) => {
+		}): Promise<{
+			data: Array<KeyValueItem & { key: string }>;
+			count: number;
+		}> => {
 			const { paginate, sort, filter } = input;
 			let entries = Array.from(this.map.entries());
 
@@ -107,9 +114,9 @@ export class KeyValueMemoryAdapter implements KeyValue {
 			};
 		},
 
-		view: (input: {
+		view: async (input: {
 			key: string;
-		}): (KeyValueItem & { key: string }) | undefined => {
+		}): Promise<(KeyValueItem & { key: string }) | undefined> => {
 			const item = this.map.get(input.key);
 			if (!item) {
 				return undefined;
@@ -117,7 +124,7 @@ export class KeyValueMemoryAdapter implements KeyValue {
 			return { key: input.key, ...item };
 		},
 
-		deleteBulk: (input: { keys: string[] }): boolean => {
+		deleteBulk: async (input: { keys: string[] }): Promise<boolean> => {
 			for (const key of input.keys) {
 				this.map.delete(key);
 			}

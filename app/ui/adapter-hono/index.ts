@@ -20,51 +20,55 @@ export class HonoDashboardAdapter {
 		};
 
 		if (enabledModules.keyValue && this.#infrakit.keyValue) {
-			app.get("/api/kv/list", (c) => {
-				return c.json(
-					this.#infrakit.dashboard.keyValue?.list({
-						paginate: {
-							pageIndex: Number(c.req.query("pageIndex")) || 0,
-							pageSize: Number(c.req.query("pageSize")) || 10,
-						},
-						filter: {
-							key: c.req.query("filterKey"),
-						},
-						sort: {
-							key: c.req.query("sortKey") as "asc" | "desc",
-							value: c.req.query("sortValue") as "asc" | "desc",
-							created: c.req.query("sortCreated") as "asc" | "desc", // Fixed typo: was "sortVreated"
-						},
-					}),
-				);
+			app.get("/api/kv/list", async (c) => {
+				const result = await this.#infrakit._dashboard.keyValue?.list({
+					paginate: {
+						pageIndex: Number(c.req.query("pageIndex")) || 0,
+						pageSize: Number(c.req.query("pageSize")) || 10,
+					},
+					filter: {
+						key: c.req.query("filterKey"),
+					},
+					sort: {
+						key: c.req.query("sortKey") as "asc" | "desc",
+						value: c.req.query("sortValue") as "asc" | "desc",
+						created: c.req.query("sortCreated") as "asc" | "desc", // Fixed typo: was "sortVreated"
+					},
+				});
+
+				return c.json(result);
 			});
 
-			app.get("/api/kv/count", (c) => {
-				return c.json({ count: this.#infrakit.dashboard.keyValue?.count() });
+			app.get("/api/kv/count", async (c) => {
+				return c.json({
+					count: await this.#infrakit._dashboard.keyValue?.count(),
+				});
 			});
 
-			app.get("/api/kv/:key", (c) => {
+			app.get("/api/kv/:key", async (c) => {
 				const key = c.req.param("key");
-				const item = this.#infrakit.dashboard.keyValue?.view({ key });
+				const item = await this.#infrakit._dashboard.keyValue?.view({ key });
 				return item !== undefined ? c.json(item) : c.notFound();
 			});
 
 			app.post("/api/kv/delete-keys", async (c) => {
 				const { keys } = await c.req.json();
-				const success = this.#infrakit.dashboard.keyValue?.deleteBulk({ keys });
+				const success = await this.#infrakit._dashboard.keyValue?.deleteBulk({
+					keys,
+				});
 				return c.json({ success, pee: "poo" });
 			});
 
 			app.post("/api/kv/:key", async (c) => {
 				const key = c.req.param("key");
 				const { value } = await c.req.json();
-				const success = this.#infrakit.keyValue?.set({ key, value });
+				const success = await this.#infrakit.keyValue?.set({ key, value });
 				return c.json({ success });
 			});
 
-			app.delete("/api/kv/:key", (c) => {
+			app.delete("/api/kv/:key", async (c) => {
 				const key = c.req.param("key");
-				const success = this.#infrakit.keyValue?.del({ key });
+				const success = await this.#infrakit.keyValue?.del({ key });
 				return c.json({ success });
 			});
 		}

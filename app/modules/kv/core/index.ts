@@ -15,13 +15,17 @@ export type KeyValueOption = {
 export type KeyValue = KeyValueClient & KeyValueDashboard;
 
 export type KeyValueClient = {
-	get(input: { key: string }): string | undefined;
-	set(input: { key: string; value: string; option?: KeyValueOption }): boolean;
-	del(input: { key: string }): boolean;
+	get(input: { key: string }): Promise<string | undefined>;
+	set(input: {
+		key: string;
+		value: string;
+		option?: KeyValueOption;
+	}): Promise<boolean>;
+	del(input: { key: string }): Promise<boolean>;
 };
 
 export type KeyValueDashboard = {
-	dashboard: {
+	_dashboard: {
 		list(input: {
 			filter?: { key?: string };
 			sort?: {
@@ -30,12 +34,14 @@ export type KeyValueDashboard = {
 				created?: "asc" | "desc";
 			};
 			paginate: { pageSize: number; pageIndex: number };
-		}): {
+		}): Promise<{
 			data: Array<KeyValueItem & { key: string }>;
 			count: number;
-		};
-		count(): number;
-		view(input: { key: string }): (KeyValueItem & { key: string }) | undefined;
-		deleteBulk(input: { keys: string[] }): boolean;
+		}>;
+		count(): Promise<number>;
+		view(input: {
+			key: string;
+		}): Promise<(KeyValueItem & { key: string }) | undefined>;
+		deleteBulk(input: { keys: string[] }): Promise<boolean>;
 	};
 };

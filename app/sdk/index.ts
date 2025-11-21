@@ -19,9 +19,9 @@ export class InfraKit<T extends InfraKitConfig = InfraKitConfig> {
 		return this.#keyValue as ExtractKeyValueAdapter<T["keyValue"]>;
 	}
 
-	get dashboard() {
+	get _dashboard() {
 		return {
-			keyValue: this.#keyValue?.dashboard,
+			keyValue: this.#keyValue?._dashboard,
 		};
 	}
 }

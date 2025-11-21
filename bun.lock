@@ -18,6 +18,7 @@
         "infrakit": "./dist/index.js",
       },
       "dependencies": {
+        "@infrakit-team/module-kv-postgres": "workspace:*",
         "consola": "^3.4.2",
         "kysely": "^0.28.8",
         "pg": "^8.16.3",
@@ -31,6 +32,21 @@
       "version": "0.1.14",
       "dependencies": {
         "@infrakit-team/module-kv": "workspace:*",
+      },
+    },
+    "app/modules/kv/adapter-postgres": {
+      "name": "@infrakit-team/module-kv-postgres",
+      "version": "0.1.14",
+      "dependencies": {
+        "@electric-sql/pglite": "^0.3.11",
+        "@electric-sql/pglite-socket": "^0.0.16",
+        "@infrakit-team/module-kv": "workspace:*",
+        "consola": "^3.4.2",
+        "kysely": "^0.28.8",
+        "pg": "^8.16.3",
+      },
+      "devDependencies": {
+        "@types/pg": "^8.15.6",
       },
     },
     "app/modules/kv/core": {
@@ -98,6 +114,7 @@
       "name": "@infrakit-team/examples/express",
       "dependencies": {
         "@infrakit-team/module-kv-memory": "workspace:*",
+        "@infrakit-team/module-kv-postgres": "workspace:*",
         "@infrakit-team/sdk": "workspace:*",
         "@infrakit-team/ui-express": "workspace:*",
         "@types/express": "^5.0.3",
@@ -108,9 +125,10 @@
       "name": "@infrakit-team/examples/hono",
       "dependencies": {
         "@infrakit-team/module-kv-memory": "workspace:*",
+        "@infrakit-team/module-kv-postgres": "workspace:*",
         "@infrakit-team/sdk": "workspace:*",
         "@infrakit-team/ui-hono": "workspace:*",
-        "hono": "^4.9.9",
+        "hono": "^4.10.4",
       },
     },
     "website": {
@@ -229,6 +247,10 @@
     "@ctrl/tinycolor": ["@ctrl/tinycolor@4.2.0", "", {}, "sha512-kzyuwOAQnXJNLS9PSyrk0CWk35nWJW/zl/6KvnTBMFK65gm7U1/Z5BqjxeapjZCIhQcM/DsrEmcbRwDyXyXK4A=="],
 
     "@drizzle-team/brocli": ["@drizzle-team/brocli@0.11.0", "", {}, "sha512-hD3pekGiPg0WPCCGAZmusBBJsDqGUR66Y452YgQsZOnkdQ7ViEPKuyP4huUGEZQefp8g34RRodXYmJ2TbCH+tg=="],
+
+    "@electric-sql/pglite": ["@electric-sql/pglite@0.3.11", "", {}, "sha512-FJtjnEyez8XgmgyE5Ewmx89TGVN+75ZjykFoExApRIbJBMT4dsbsuZkF/YWLuymGDfGFHDACjvENPMEqg4FoWg=="],
+
+    "@electric-sql/pglite-socket": ["@electric-sql/pglite-socket@0.0.16", "", { "peerDependencies": { "@electric-sql/pglite": "0.3.11" }, "bin": { "pglite-server": "dist/scripts/server.js" } }, "sha512-Gl69ssPrFjS9QwAYotruKeQtgzXAnZMN+hZgHhP+RuxSh8CNj+DTmE07K+OjSHjqtjZDQC6n0D0EEIUEDDQwTw=="],
 
     "@emnapi/runtime": ["@emnapi/runtime@1.5.0", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-97/BJ3iXHww3djw6hYIfErCZFee7qCtrneuLa20UXFCOTCfBM2cvQHjWJ2EG0s0MtdNwInarqCTz35i4wWXHsQ=="],
 
@@ -353,6 +375,8 @@
     "@infrakit-team/module-kv": ["@infrakit-team/module-kv@workspace:app/modules/kv/core"],
 
     "@infrakit-team/module-kv-memory": ["@infrakit-team/module-kv-memory@workspace:app/modules/kv/adapter-memory"],
+
+    "@infrakit-team/module-kv-postgres": ["@infrakit-team/module-kv-postgres@workspace:app/modules/kv/adapter-postgres"],
 
     "@infrakit-team/module-kv-test": ["@infrakit-team/module-kv-test@workspace:app/modules/kv/test"],
 
@@ -888,7 +912,7 @@
 
     "hastscript": ["hastscript@9.0.1", "", { "dependencies": { "@types/hast": "^3.0.0", "comma-separated-tokens": "^2.0.0", "hast-util-parse-selector": "^4.0.0", "property-information": "^7.0.0", "space-separated-tokens": "^2.0.0" } }, "sha512-g7df9rMFX/SPi34tyGCyUBREQoKkapwdY/T04Qn9TDWfHhAYt4/I0gMVirzK5wEzeUqIjEB+LXC/ypb7Aqno5w=="],
 
-    "hono": ["hono@4.10.1", "", {}, "sha512-rpGNOfacO4WEPClfkEt1yfl8cbu10uB1lNpiI33AKoiAHwOS8lV748JiLx4b5ozO/u4qLjIvfpFsPXdY5Qjkmg=="],
+    "hono": ["hono@4.10.4", "", {}, "sha512-YG/fo7zlU3KwrBL5vDpWKisLYiM+nVstBQqfr7gCPbSYURnNEP9BDxEMz8KfsDR9JX0lJWDRNc6nXX31v7ZEyg=="],
 
     "html-entities": ["html-entities@2.3.3", "", {}, "sha512-DV5Ln36z34NNTDgnz0EWGBLZENelNAtkiFA4kyNOG2tDI6Mz1uSWiq1wAKdyjnJwyDiDO7Fa2SO1CTxPXL8VxA=="],
 

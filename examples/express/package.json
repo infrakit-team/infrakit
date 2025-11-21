@@ -3,6 +3,7 @@
 	"dependencies": {
 		"@infrakit-team/ui-express": "workspace:*",
 		"@infrakit-team/module-kv-memory": "workspace:*",
+		"@infrakit-team/module-kv-postgres": "workspace:*",
 		"@infrakit-team/sdk": "workspace:*",
 		"@types/express": "^5.0.3",
 		"express": "^5.1.0"

@@ -21,18 +21,11 @@
 		"build:types": "bunx tsc --project tsconfig.build.json",
 		"prepublishOnly": "bun run build"
 	},
-	"exports": {
-		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./dist/index.js",
-			"default": "./dist/index.js"
-		},
-		"./package.json": "./package.json"
-	},
 	"dependencies": {
 		"consola": "^3.4.2",
 		"kysely": "^0.28.8",
-		"pg": "^8.16.3"
+		"pg": "^8.16.3",
+		"@infrakit-team/module-kv-postgres": "workspace:*"
 	},
 	"devDependencies": {
 		"@types/pg": "^8.15.6"

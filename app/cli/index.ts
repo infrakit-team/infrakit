@@ -2,7 +2,7 @@
 
 import { command, run } from "@drizzle-team/brocli";
 import { keyValue } from "./modules/key-value";
-import packageJson from "./package.json" assert { type: "json" };
+import packageJson from "./package.json";
 
 const generate = command({
 	name: "create",

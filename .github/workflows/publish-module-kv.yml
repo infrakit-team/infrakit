@@ -47,6 +47,7 @@ jobs:
             const releasePackages = [
               'app/modules/kv/core',
               'app/modules/kv/adapter-memory'
+              'app/modules/kv/adapter-postgres'
             ];
             
             // Update package versions

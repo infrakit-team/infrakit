@@ -1,8 +1,9 @@
 {
 	"name": "@infrakit-team/examples/hono",
 	"dependencies": {
-		"hono": "^4.9.9",
+		"hono": "^4.10.4",
 		"@infrakit-team/module-kv-memory": "workspace:*",
+		"@infrakit-team/module-kv-postgres": "workspace:*",
 		"@infrakit-team/sdk": "workspace:*",
 		"@infrakit-team/ui-hono": "workspace:*"
 	}
